@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TaxiDriver</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="start">Start</string>
+    <string name="word_GPS_not_enabled">gps not enabled</string>
+    <string name="word_GPS_enable">gps enabled</string>
+    <string name="word_GPS">GPS</string>
+    <!--    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyApe8T3JMiqj9OgEbqd&#45;&#45;zTBfl3fibPeEs</string>-->
+
+    <string name="Login_content">Enter your registered</string>
+    <string name="Login_content1">mobile number</string>
+    <string name="login_button_text">CONTINUE</string>
+</resources>
