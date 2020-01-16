@@ -5,5 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="Logincolor">#707070</color>
     <color name="login_button">#FF7701</color>
+    <color name="Login_button_white">#FFF9EB</color>
+    <color name="welcome">#30373F</color>
+    <color name="pin_view">#D9DBDA</color>
 
 </resources>

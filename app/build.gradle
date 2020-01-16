@@ -29,7 +29,9 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-
+    implementation 'com.kaopiz:kprogresshud:1.1.0'
+    implementation 'com.github.mohammadatif:Animatoo:master'
+    implementation 'com.github.GoodieBag:Pinview:v1.4'
 
     //======================================================
     implementation 'com.google.android.libraries.places:places:1.1.0'

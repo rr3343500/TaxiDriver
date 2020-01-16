@@ -10,4 +10,8 @@
     <string name="Login_content">Enter your registered</string>
     <string name="Login_content1">mobile number</string>
     <string name="login_button_text">CONTINUE</string>
+    <string name="Login_credential">Enter OTP</string>
+    <string name="Login_otp">OTP has been send on </string>
+    <string name="Login_resend">RESEND OTP</string>
+    <string name="Login_varify">VERIFY &amp; LOGIN</string>
 </resources>

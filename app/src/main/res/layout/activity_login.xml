@@ -16,35 +16,41 @@
         android:orientation="vertical"
         >
 
-  <TextView
+  <com.example.taxidriver.extended.TexiFonts
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="Login"
+      app:fonttype="bold"
       android:textSize="30dp"
       android:textColor="#717171"
       />
 
-        <TextView
+        <com.example.taxidriver.extended.TexiFonts
             android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Login_content"
             android:textSize="20dp"
+            app:fonttype="bold"
             android:textColor="@color/Logincolor"
 
             />
-        <TextView
+        <com.example.taxidriver.extended.TexiFonts
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Login_content1"
             android:textSize="20dp"
+            app:fonttype="bold"
             android:textColor="@color/Logincolor"
 
-            />
+            tools:ignore="MissingPrefix" />
 
-        <EditText
+        <com.example.taxidriver.extended.EdittextFont
             android:layout_marginTop="40dp"
+            android:id="@+id/mobile"
+            android:inputType="number"
+            android:maxLength="10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/Logincolor"
@@ -52,11 +58,13 @@
             />
 
 
-        <Button
+        <com.example.taxidriver.extended.ButtonFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:layout_marginTop="80dp"
+            app:fonttype="bold"
+            android:id="@+id/request"
             android:background="@drawable/button"
             android:text="@string/login_button_text" />
 

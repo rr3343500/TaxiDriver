@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_focused="true">
+        <shape android:padding="0dp" android:shape="rectangle">
+            <stroke android:width="0.5dp" android:color="@color/Logincolor" />
+            <solid android:color="#fff" />
+            <corners android:radius="30dp" />
+            <gradient android:startColor="@color/pin_view"
+                android:endColor="@color/pin_view"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:padding="0dp" android:shape="rectangle" >
+            <stroke android:width="0.5dp" android:color="@color/Logincolor" />
+            <solid android:color="#FFF" />
+            <corners android:radius="30dp" />
+            <gradient android:startColor="@color/pin_view"
+                android:endColor="@color/pin_view"/>
+        </shape>
+    </item>
+</selector>
