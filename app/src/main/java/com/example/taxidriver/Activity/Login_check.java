@@ -27,6 +27,7 @@ public class Login_check extends AppCompatActivity {
     ButtonFonts varify;
     KProgressHUD kProgressHUD;
     TexiFonts resend;
+    UserSession  userSession;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +81,11 @@ public class Login_check extends AppCompatActivity {
                     String response = jsonHelper.GetResult("response");
                     if (response.equals("TRUE")) {
 
-//                        UserSession userSession= new UserSession(Login_check.this);
-//                        userSession.createLoginSession(mobile);
+                        UserSession userSession= new UserSession(Login_check.this);
+                        userSession.createLoginSession(mobile);
+
                         Intent intent = new Intent(Login_check.this, MainActivity.class);//Home
+                        intent.putExtra("mobile",mobile);
                         remove_progress_Dialog();
                         startActivity(intent);
                         Animatoo.animateFade(Login_check.this);

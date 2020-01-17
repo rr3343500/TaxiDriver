@@ -15,6 +15,7 @@ public class Constants {
 
     public static String LOGIN = URL+"login";
     public static String REQUEST_OTP = URL+"request";
+    public static String DUTY_RESPONCE = URL+"OnOffDuty";
 
 
 

@@ -33,7 +33,17 @@ import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.example.taxidriver.Activity.Login;
+import com.example.taxidriver.Activity.Login_check;
+import com.example.taxidriver.config.Constants;
+import com.example.taxidriver.connection.ConnectionServer;
+import com.example.taxidriver.connection.JsonHelper;
 import com.google.android.gms.location.LocationListener;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -80,12 +90,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.taxidriver.R.color.Logincolor;
+import static com.example.taxidriver.R.color.login_button;
+import static com.example.taxidriver.R.color.pin_view;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         , GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
     private GoogleMap mMap;
+    RadioButton on,off,house;
+    RadioGroup radioGroup;
+
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int GOOGLE_API_CLIENT_ID = 0;
@@ -142,10 +159,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
 
+    LinearLayout dutypannel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final Intent intent=getIntent();
 
   //       Read from the database
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -165,6 +185,51 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                Log.w(TAG, "Failed to read value.", error.toException());
 //            }
 //        });
+
+
+        //=============================================================
+        //on duty/off duty
+          radioGroup = findViewById(R.id.duty);
+          dutypannel=findViewById(R.id.dutypannel);
+          on= findViewById(R.id.on);
+          off= findViewById(R.id.off);
+          house= findViewById(R.id.home);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @SuppressLint("ResourceAsColor")
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.on:
+                         dutypannel.setBackgroundColor(login_button);
+
+                         Duty_responce(intent.getStringExtra("mobile"),"true");
+                         on.setButtonDrawable(R.mipmap.onoff_foreground);
+                         off.setButtonDrawable(null);
+                         house.setButtonDrawable(null);
+                         break;
+                    case R.id.off:
+                        // do operations specific to this selection'
+                        dutypannel.setBackgroundColor(Logincolor);
+                        Duty_responce(intent.getStringExtra("mobile"),"false");
+                        on.setButtonDrawable(null);
+                        off.setButtonDrawable(R.mipmap.onoff_foreground);
+                        house.setButtonDrawable(null);
+                        break;
+                    case R.id.home:
+                        // do operations specific to this selection
+                       dutypannel.setBackgroundColor(pin_view);
+                        Duty_responce(intent.getStringExtra("mobile"),"home");
+                        on.setButtonDrawable(null);
+                        off.setButtonDrawable(null);
+                        house.setButtonDrawable(R.mipmap.onoff_foreground);
+                        break;
+                }
+            }
+        });
+
+
+        //=============================================================
 
 
         mGoogleApiClient2 = new GoogleApiClient.Builder(MainActivity.this)
@@ -886,5 +951,49 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         brng = (brng + 360) % 360;
 
         return brng;
+    }
+
+
+
+
+
+//    @SuppressLint("ResourceAsColor")0.
+
+//    public  void duty(View view) {
+//        int radioId= radioGroup.getCheckedRadioButtonId();
+////        Log.e("id", String.valueOf(radioId));
+//        radioButton=findViewById(radioId);
+////        Toast.makeText(this, radioButton.getText().toString(), Toast.LENGTH_SHORT).show();
+//        if(radioButton.getText()=="on"){
+//         dutypannel.setBackgroundColor(login_button);
+//        }
+//
+//    }
+
+
+    public void Duty_responce(final String mobile ,String aBoolean){
+        ConnectionServer connectionServer = new ConnectionServer();
+        connectionServer.requestedMethod("POST");
+        connectionServer.set_url(Constants.DUTY_RESPONCE);
+        connectionServer.buildParameter("mobile",mobile);
+        connectionServer.buildParameter("duty",aBoolean);
+
+        connectionServer.execute(new ConnectionServer.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                Log.e("output", output);
+                JsonHelper jsonHelper = new JsonHelper(output);
+                if (jsonHelper.isValidJson()) {
+                    String response = jsonHelper.GetResult("response");
+                    if (response.equals("TRUE")) {
+
+
+                    }
+
+                }
+
+            }
+        });
+
     }
 }
