@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+
     android:orientation="vertical"
     android:id="@+id/constLayout">
 
@@ -15,45 +16,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         map:layout_constraintRight_toRightOf="parent"
-
         map:layout_constraintLeft_toLeftOf="parent"
         map:layout_constraintBottom_toBottomOf="parent"
-
-
         map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintVertical_bias="1.0"
         map:layout_constraintTop_toBottomOf="@+id/destination_ET" />
 
 
-    <LinearLayout
+    <include layout="@layout/topnavbar_mainactivity"
+        android:layout_width="wrap_content"
+        android:id="@+id/topbar"
+        android:layout_height="70dp"
+        />
+
+    <include layout="@layout/incentive_pannel"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:id="@+id/dutypannel"
-        android:background="@color/Logincolor">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/car" />
-
-        <include layout="@layout/duty_button"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        >
-
-    </include>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/car" />
-
-    </LinearLayout>
+        android:layout_below="@id/topbar"
+        android:layout_height="wrap_content"/>
 
 
     <AutoCompleteTextView

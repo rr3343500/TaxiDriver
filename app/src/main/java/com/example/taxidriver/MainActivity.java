@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.StateListDrawable;
 import android.location.Location;
 //import android.location.LocationListener;
 import android.location.LocationManager;
@@ -36,6 +37,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
@@ -44,6 +46,7 @@ import com.example.taxidriver.Activity.Login_check;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
+import com.example.taxidriver.extended.TexiFonts;
 import com.google.android.gms.location.LocationListener;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -90,8 +93,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.taxidriver.R.color.Login_button_white;
 import static com.example.taxidriver.R.color.Logincolor;
 import static com.example.taxidriver.R.color.login_button;
+import static com.example.taxidriver.R.color.low_text_color;
 import static com.example.taxidriver.R.color.pin_view;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback
@@ -102,6 +107,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     RadioButton on,off,house;
     RadioGroup radioGroup;
+    TextView ontext,offtext,hometext;
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -194,35 +200,47 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           on= findViewById(R.id.on);
           off= findViewById(R.id.off);
           house= findViewById(R.id.home);
+          ontext= findViewById(R.id.on_text);
+          offtext= findViewById(R.id.off_text);
+          hometext= findViewById(R.id.home_text);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
-            @SuppressLint("ResourceAsColor")
+            @SuppressLint({"ResourceAsColor", "ResourceType"})
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.on:
-                         dutypannel.setBackgroundColor(login_button);
-
+//                         dutypannel.setBackgroundColor(login_button);
+                         dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));
                          Duty_responce(intent.getStringExtra("mobile"),"true");
                          on.setButtonDrawable(R.mipmap.onoff_foreground);
-                         off.setButtonDrawable(null);
-                         house.setButtonDrawable(null);
+                         off.setButtonDrawable(new StateListDrawable());
+                         house.setButtonDrawable(new StateListDrawable());
+                         ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                         offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                         hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                          break;
                     case R.id.off:
                         // do operations specific to this selection'
-                        dutypannel.setBackgroundColor(Logincolor);
+                        dutypannel.setBackground(getResources().getDrawable(R.drawable.off_duty));
                         Duty_responce(intent.getStringExtra("mobile"),"false");
-                        on.setButtonDrawable(null);
+                        on.setButtonDrawable(new StateListDrawable());
                         off.setButtonDrawable(R.mipmap.onoff_foreground);
-                        house.setButtonDrawable(null);
+                        house.setButtonDrawable(new StateListDrawable());
+                        offtext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                        ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         break;
                     case R.id.home:
                         // do operations specific to this selection
-                       dutypannel.setBackgroundColor(pin_view);
+                        dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
                         Duty_responce(intent.getStringExtra("mobile"),"home");
-                        on.setButtonDrawable(null);
-                        off.setButtonDrawable(null);
+                        on.setButtonDrawable(new StateListDrawable());
+                        off.setButtonDrawable(new StateListDrawable());
                         house.setButtonDrawable(R.mipmap.onoff_foreground);
+                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                        offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                        ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                         break;
                 }
             }

@@ -8,5 +8,6 @@
     <color name="Login_button_white">#FFF9EB</color>
     <color name="welcome">#30373F</color>
     <color name="pin_view">#D9DBDA</color>
+    <color name="low_text_color">#EAA05F</color>
 
 </resources>

@@ -14,4 +14,8 @@
     <string name="Login_otp">OTP has been send on </string>
     <string name="Login_resend">RESEND OTP</string>
     <string name="Login_varify">VERIFY &amp; LOGIN</string>
+    <string name="booking">BOOKINGS</string>
+    <string name="operator_bill">OPERATOR BILL</string>
+    <string name="incentive">INCENTIVE</string>
+    <string name="total">TOTAL</string>
 </resources>
