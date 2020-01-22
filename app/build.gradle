@@ -18,6 +18,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -33,7 +35,7 @@ dependencies {
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.github.GoodieBag:Pinview:v1.4'
 
-    //======================================================
+    //map libraries
     implementation 'com.google.android.libraries.places:places:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
@@ -41,6 +43,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 //    implementation 'com.google.android.gms:play-services-places:10.2.0'
 //    implementation 'com.google.android.gms:play-services:12.0.1'
+    // end of map libraries
 
-    //=================================================
+    //web socket libraries
+
+    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+
+    //end web socket libraries
+
 }

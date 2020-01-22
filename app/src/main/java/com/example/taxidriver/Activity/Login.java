@@ -16,12 +16,17 @@ import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
 import com.example.taxidriver.extended.ButtonFonts;
 import com.example.taxidriver.extended.EdittextFont;
+import com.example.taxidriver.webSocket.WebSocketConnection;
+import com.example.taxidriver.webSocket.WebSocketManupulation;
+import com.google.firebase.database.tubesock.WebSocket;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 public class Login extends AppCompatActivity {
     KProgressHUD kProgressHUD;
        EdittextFont mobile;
        ButtonFonts request;
+       WebSocketConnection webSocketConnection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +35,18 @@ public class Login extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+
+
+//        webSocketConnection= new WebSocketConnection();
+//        webSocketConnection.onCreate();
+//        webSocketConnection.SendData();
+
+
+//          webSocketManupulation= new WebSocketManupulation();
+
+
+
 
         request= findViewById(R.id.request);
         mobile=findViewById(R.id.mobile);

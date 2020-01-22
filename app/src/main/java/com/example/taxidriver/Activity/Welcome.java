@@ -29,6 +29,7 @@ public class Welcome extends AppCompatActivity {
         getSupportActionBar().hide();
 
         session =new UserSession(Welcome.this);
+        session.checkLogin();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -45,5 +46,7 @@ public class Welcome extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
+
+
     }
 }

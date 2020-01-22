@@ -50,13 +50,22 @@
         map:layout_constraintTop_toTopOf="parent"
         map:layout_constraintHorizontal_bias="0.0" />
 
-    <Button
+
+
+    <com.example.taxidriver.extended.ButtonFonts
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="#000"
         android:onClick="drawRoute"
         android:hint="Start"
-        android:layout_alignParentBottom="true"/>
+        android:layout_above="@id/bottommenu"
+       />
+
+    <include layout="@layout/activity_bottom_menu"
+        android:layout_width="match_parent"
+        android:id="@+id/bottommenu"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"/>
 
 
 

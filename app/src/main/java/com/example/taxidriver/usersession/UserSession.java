@@ -1,16 +1,14 @@
-package com.example.taxidriver.usersession;
+// session class to store confidential information
 
+package com.example.taxidriver.usersession;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
-
 import com.example.taxidriver.MainActivity;
-
 import java.util.HashMap;
 
 /**
- * Created by kshitij on 12/18/17.
+ * Created by rrdreamtechnology on 18/01/2020.
  */
 
 public class UserSession {
@@ -44,15 +42,18 @@ public class UserSession {
 
     // Mobile number (make variable public to access from outside)
     public static final String KEY_MOBiLE = "mobile";
+    // latitute number (make variable public to access from outside)
+    public static final String LATITUTE = "latitute";
+
+    // logitute number (make variable public to access from outside)
+    public static final String LOGITUTE = "logitute";
+
+
+    // Mobile number (make variable public to access from outside)
+    public static final String DUTY_STATUS = "status";
 
     // user avatar (make variable public to access from outside)
     public static final String KEY_PHOTO = "photo";
-
-    // number of items in our cart
-    public static final String KEY_CART = "cartvalue";
-
-    // number of items in our wishlist
-    public static final String KEY_WISHLIST = "wishlistvalue";
 
     // check first time app launch
     public static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
@@ -64,9 +65,7 @@ public class UserSession {
         editor = pref.edit();
     }
 
-    /**
-     * Create login session
-     * */
+
     public void createLoginSession( String mobile){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
@@ -79,6 +78,8 @@ public class UserSession {
 
         // Storing phone number in pref
         editor.putString(KEY_MOBiLE, mobile);
+        // storing duty status in pref
+        editor.putString(DUTY_STATUS,"false");
 
         // Storing image url in pref
 //        editor.putString(KEY_PHOTO, photo);
@@ -94,7 +95,7 @@ public class UserSession {
      * */
     public void checkLogin(){
         // Check login status
-        if(!this.isLoggedIn()){
+        if(this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(context, MainActivity.class);
             // Closing all the Activities
@@ -160,59 +161,12 @@ public class UserSession {
         return pref.getBoolean(IS_LOGIN, false);
     }
 
-    public int getCartValue(){
-        return pref.getInt(KEY_CART,0);
-    }
-
-    public int getWishlistValue(){
-        return pref.getInt(KEY_WISHLIST,0);
-    }
-
     public Boolean getFirstTime() {
         return pref.getBoolean(FIRST_TIME, true);
     }
 
     public void setFirstTime(Boolean n){
         editor.putBoolean(FIRST_TIME,n);
-        editor.commit();
-    }
-
-
-    public void increaseCartValue(){
-        int val = getCartValue()+1;
-        editor.putInt(KEY_CART,val);
-        editor.commit();
-        Log.e("Cart Value PE", "Var value : "+val+"Cart Value :"+getCartValue()+" ");
-    }
-
-    public void increaseWishlistValue(){
-        int val = getWishlistValue()+1;
-        editor.putInt(KEY_WISHLIST,val);
-        editor.commit();
-        Log.e("Cart Value PE", "Var value : "+val+"Cart Value :"+getCartValue()+" ");
-    }
-
-    public void decreaseCartValue(){
-        int val = getCartValue()-1;
-        editor.putInt(KEY_CART,val);
-        editor.commit();
-        Log.e("Cart Value PE", "Var value : "+val+"Cart Value :"+getCartValue()+" ");
-    }
-
-    public void decreaseWishlistValue(){
-        int val = getWishlistValue()-1;
-        editor.putInt(KEY_WISHLIST,val);
-        editor.commit();
-        Log.e("Cart Value PE", "Var value : "+val+"Cart Value :"+getCartValue()+" ");
-    }
-
-    public void setCartValue(int count){
-        editor.putInt(KEY_CART,count);
-        editor.commit();
-    }
-
-    public void setWishlistValue(int count){
-        editor.putInt(KEY_WISHLIST,count);
         editor.commit();
     }
 
@@ -223,5 +177,54 @@ public class UserSession {
 
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+    }
+
+    /**
+     *  get user mobile
+     * **/
+    public String get_mobile() {
+        String usename = pref.getString("mobile","");
+        return usename;
+    }
+
+    /**
+     * set user status
+     * **/
+    public void set_current_duty_status(String status)
+    {
+        editor.putString(DUTY_STATUS,status);
+        editor.commit();
+    }
+
+    /**
+     * get user status
+     * **/
+    public String get_duty_status(){
+        return pref.getString(DUTY_STATUS, null);
+    }
+
+    /**
+     * set current location
+     * **/
+    public void setLocation(String lat,String lon)
+    {
+        editor.putString(LATITUTE,lat);
+        editor.putString(LOGITUTE,lon);
+    }
+
+    /**
+     * get user location latitute
+     * **/
+    public Double getLatitute()
+    {
+        return Double.parseDouble(pref.getString(LATITUTE,null));
+    }
+
+    /**
+     * get user loaction logitute
+     * **/
+    public Double getLogitute()
+    {
+        return Double.parseDouble(pref.getString(LOGITUTE,null));
     }
 }

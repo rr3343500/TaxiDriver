@@ -34,6 +34,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -47,6 +48,9 @@ import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
 import com.example.taxidriver.extended.TexiFonts;
+import com.example.taxidriver.usersession.UserSession;
+import com.example.taxidriver.webSocket.BackgroundService;
+import com.example.taxidriver.webSocket.InternetConnectivity;
 import com.google.android.gms.location.LocationListener;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -99,27 +103,20 @@ import static com.example.taxidriver.R.color.login_button;
 import static com.example.taxidriver.R.color.low_text_color;
 import static com.example.taxidriver.R.color.pin_view;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback
-        , GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     RadioButton on,off,house;
     RadioGroup radioGroup;
     TextView ontext,offtext,hometext;
-
-
+    ImageView car;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private GoogleApiClient mGoogleApiClient2;
-
-    double latitude;
-    double longitude;
+    public UserSession userSession;
     double destLat;
     double destLong;
     String api_token, address;
-    Button startBT;
     AutoCompleteTextView destinationET;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
@@ -130,30 +127,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     boolean isGPS;
     private PlaceArrayAdapter mPlaceArrayAdapter;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
-
+    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     LatLng origin;
     LatLng dest;
     PolylineOptions lineOptions;
     boolean startTrack = false;
     ArrayList<LatLng> points;
-
-
-
     LatLng previouslatLng;
     Marker m ;
     private Location previousLocation;
-
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
     // fastest updates interval - 5 sec
     // location updates will be received if another app is requesting the locations
     // than your app can handle
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     private static final int REQUEST_CHECK_SETTINGS = 100;
-
     // bunch of location related apis
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -161,17 +150,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
     private Location mCurrentLocation;
-
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
-
     LinearLayout dutypannel;
+    BackgroundService backgroundService;
+    Intent intent;
 
+
+    //oncreate method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final Intent intent=getIntent();
+         userSession = new UserSession(MainActivity.this);
+         // get id of layout
+        radioGroup = findViewById(R.id.duty);
+        dutypannel=findViewById(R.id.dutypannel);
+        on= findViewById(R.id.on);
+        off= findViewById(R.id.off);
+        house= findViewById(R.id.home);
+        ontext= findViewById(R.id.on_text);
+        offtext= findViewById(R.id.off_text);
+        hometext= findViewById(R.id.home_text);
+        car= findViewById(R.id.car);
+        set_initial_duty_status();
+
+        // initiate background services
+          backgroundService= new BackgroundService(this);
+          intent= new Intent(MainActivity.this,BackgroundService.class);
+        //end  initiate background services
+
+
+
 
   //       Read from the database
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -193,68 +203,70 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //        });
 
 
-        //=============================================================
-        //on duty/off duty
-          radioGroup = findViewById(R.id.duty);
-          dutypannel=findViewById(R.id.dutypannel);
-          on= findViewById(R.id.on);
-          off= findViewById(R.id.off);
-          house= findViewById(R.id.home);
-          ontext= findViewById(R.id.on_text);
-          offtext= findViewById(R.id.off_text);
-          hometext= findViewById(R.id.home_text);
 
+        //on duty/off duty
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @SuppressLint({"ResourceAsColor", "ResourceType"})
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.on:
-//                         dutypannel.setBackgroundColor(login_button);
+                        backgroundService.onStartCommand(intent,1,1);
+                        userSession.set_current_duty_status("ture");
                          dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));
-                         Duty_responce(intent.getStringExtra("mobile"),"true");
+                         Duty_responce(userSession.get_mobile(),"true");
                          on.setButtonDrawable(R.mipmap.onoff_foreground);
                          off.setButtonDrawable(new StateListDrawable());
                          house.setButtonDrawable(new StateListDrawable());
+                         car.setVisibility(View.VISIBLE);
                          ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                          offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                          hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                          break;
                     case R.id.off:
-                        // do operations specific to this selection'
+                        backgroundService.onDestroy();
+                        userSession.set_current_duty_status("false");
                         dutypannel.setBackground(getResources().getDrawable(R.drawable.off_duty));
-                        Duty_responce(intent.getStringExtra("mobile"),"false");
+                        Duty_responce(userSession.get_mobile(),"false");
                         on.setButtonDrawable(new StateListDrawable());
                         off.setButtonDrawable(R.mipmap.onoff_foreground);
                         house.setButtonDrawable(new StateListDrawable());
                         offtext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                        car.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.home:
-                        // do operations specific to this selection
+                        userSession.set_current_duty_status("home");
                         dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
-                        Duty_responce(intent.getStringExtra("mobile"),"home");
+                        Duty_responce(userSession.get_mobile(),"home");
                         on.setButtonDrawable(new StateListDrawable());
                         off.setButtonDrawable(new StateListDrawable());
                         house.setButtonDrawable(R.mipmap.onoff_foreground);
                         hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                         ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                        car.setVisibility(View.VISIBLE);
                         break;
                 }
             }
         });
+        //end of on duty/off duty
 
 
-        //=============================================================
 
 
+        //build google client object
         mGoogleApiClient2 = new GoogleApiClient.Builder(MainActivity.this)
                 .addApi(com.google.android.gms.location.places.Places.GEO_DATA_API)
                 .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
                 .addConnectionCallbacks(this)
                 .build();
+        //end of build google client object
+
+
+
+
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
@@ -274,21 +286,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         init();
-
-
-
         destinationET = findViewById(R.id.destination_ET);
         destinationET.setThreshold(3);
-//        startBT = findViewById(R.id.start_BT);
         mPlaceArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_MOUNTAIN_VIEW, null);
         destinationET.setAdapter(mPlaceArrayAdapter);
         locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
         isGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+
+
+        //get gps permission by user
         if (!isGPS) {
 
             new AlertDialog.Builder(this)
@@ -309,10 +319,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     .show();
 
         }
-
+        //get gps permission by user
     }
+    //oncreate method
 
-
+    //place adapter for fatching places
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
@@ -326,9 +337,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i(TAG, "Fetching details for ID: " + item.placeId);
         }
     };
+    //place adapter for fatching places
 
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
-            = new ResultCallback<PlaceBuffer>() {
+
+
+    //update place call back method
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
@@ -340,21 +354,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             final Place place = (Place) places.get(0);
             CharSequence attributions = places.getAttributions();
             Log.e("place", place.getName() + place.getId());
-            //    addMarker(place.getLatLng());
             destLat = place.getLatLng().latitude;
             destLong = place.getLatLng().longitude;
             mMap.clear();
-//            mMap.addMarker(new MarkerOptions().title("My Source").position(new LatLng(mLastLocation.getLatitude() , mLastLocation.getLongitude())));
-//            mMap.addMarker(new MarkerOptions().title("My destination").position(place.getLatLng()));
             Toast.makeText(getApplication(), "place" + place.getName() + place.getId(), Toast.LENGTH_LONG).show();
 
         }
     };
+    //update place call back method
+
+
+
+    //get current location metthod
     @SuppressLint("RestrictedApi")
     private void init() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
-
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -366,33 +381,30 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         mRequestingLocationUpdates = false;
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
-
     }
+    //end of get current location metthod
+
+
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
-
+    //set google map
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
-
             return;
         }
         mMap.setMyLocationEnabled(false);
@@ -400,92 +412,65 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+    //end of set google map
 
+    //connected google map api
     @SuppressLint("RestrictedApi")
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
         mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient2);
         Log.i(TAG, "Google Places API connected.");
-
-
     }
+    //end of connected google map api
 
+
+    //method to check api is suspended or not
     @Override
     public void onConnectionSuspended(int i) {
         mPlaceArrayAdapter.setGoogleApiClient(null);
         Log.e(TAG, "Google Places API connection suspended.");
     }
+    //end of method to check api is suspended or not
 
+
+    //method for getting error if api is not connected
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-        Log.e(TAG, "Google Places API connection failed with error code: "
-                + connectionResult.getErrorCode());
-
-        Toast.makeText(this,
-                "Google Places API connection failed with error code:" +
-                        connectionResult.getErrorCode(),
-                Toast.LENGTH_LONG).show();
-
+        Log.e(TAG, "Google Places API connection failed with error code: " + connectionResult.getErrorCode());
+        Toast.makeText(this, "Google Places API connection failed with error code:" + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
     }
+    //end of method for getting error if api is not connected
 
+
+    //method to get updated location
+    @SuppressLint("WrongConstant")
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-
-//        if (mCurrLocationMarker == null) {
-//            addMarker(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-//
-//
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-//                    new LatLng(location.getLatitude(), location.getLongitude()), 16));
-//        }
-
         if (mCurrLocationMarker == null) {
             LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-//            mCurrLocationMarker =  mMap.addMarker(new MarkerOptions().draggable(true).title("you are hear  ").
-//                    position(myLocation));
-
-
-
-            mMap.addMarker(new MarkerOptions()
-                    .position(myLocation)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .title("My Location"));
+            mMap.addMarker(new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("My Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
             Log.d("location", "Latitude:" + mLastLocation.getLatitude() + "\n" + "Longitude:" + mLastLocation.getLongitude());
-
-
+            userSession.setLocation(String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()));
         }
-
-
-
         if (startTrack) {
-
             previouslatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             if  (m != null)
                 m.remove();
-//
-//            m = mMap.addMarker(new MarkerOptions().draggable(true).title("I am here ").
-//                    position(previouslatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.walk)));
             if (origin.latitude != mLastLocation.getLatitude()  && origin.longitude != mLastLocation.getLongitude() ) {
-
             }
             double rota = 0.0;
             double startrota = 0.0;
             if (previousLocation != null) {
-
-                rota = bearingBetweenLocations(previouslatLng, new LatLng(destLat
-                        ,destLong));
+                rota = bearingBetweenLocations(previouslatLng, new LatLng(destLat,destLong));
             }
-
             previousLocation = location;
             Log.e(TAG, "Firing onLocationChanged..........................");
             Log.e(TAG, "lat :" + location.getLatitude() + "long :" + location.getLongitude());
@@ -493,18 +478,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
+    //end of method to get updated location
 
 
-
+    //create object google api client
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
         mGoogleApiClient.connect();
     }
+    //end of create object google api client
 
+
+    //method for checking Location permission
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -516,9 +501,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(this)
-                        .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                new AlertDialog.Builder(this).setTitle("Location Permission Needed").setMessage("This app needs the Location permission, please accept to use location functionality")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -542,7 +525,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+    //method for checking Location permission
 
+    //method for enabling gps by user
     public void showGPSSettingsAlert() {
         isGPS = false;
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -557,6 +542,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         alertDialog.show();
     }
+    //method for enabling gps by user
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -592,6 +578,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -599,12 +586,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             isGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (!isGPS)
                 showGPSSettingsAlert();
-
-
         }
     }
 
 
+    //method for mark point in map
     public void addMarker(LatLng latLng) {
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -621,7 +607,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             Log.e("address", "nothing happen");
     }
+    //end of method for mark point in map
 
+
+    //mark source location on map
     public void Source(Double lat,Double log ,String msg){
         LatLng current;
         current = new LatLng(lat,log);
@@ -631,6 +620,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 current, 16));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
     }
+    //end of mark source location on map
 
 
     @Override
@@ -642,6 +632,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+    //method for draw route on map
     public void drawRoute(View view) {
         Double  Lati=26.236280;
         Double  Logi=78.179939;
@@ -666,7 +658,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         startTrack = true;
     }
+    //end of method for draw route on map
 
+
+    //method for generating url b/w two location
     private String getUrl(LatLng origin, LatLng dest) {
 
 
@@ -694,7 +689,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         return url;
     }
+    //end of method for generating url b/w two location
 
+
+    //method for find route b/w two lacation
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
         @Override
@@ -725,7 +723,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
+    //end of method for find route b/w two lacation
 
+
+    //method for get route b/w two places
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -763,6 +764,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return data;
     }
+    //method for get route b/w two places
+
 
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
@@ -841,25 +844,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleApiClient2.disconnect();
     }
 
-//    private void startLocationUpdates() {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-//                mLocationCallback,
-//                null /* Looper */);
-//    }
-//
-//    private void stopLocationUpdates() {
-//        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-//    }
+
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -973,22 +958,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-
-
-//    @SuppressLint("ResourceAsColor")0.
-
-//    public  void duty(View view) {
-//        int radioId= radioGroup.getCheckedRadioButtonId();
-////        Log.e("id", String.valueOf(radioId));
-//        radioButton=findViewById(radioId);
-////        Toast.makeText(this, radioButton.getText().toString(), Toast.LENGTH_SHORT).show();
-//        if(radioButton.getText()=="on"){
-//         dutypannel.setBackgroundColor(login_button);
-//        }
-//
-//    }
-
-
     public void Duty_responce(final String mobile ,String aBoolean){
         ConnectionServer connectionServer = new ConnectionServer();
         connectionServer.requestedMethod("POST");
@@ -1014,4 +983,44 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+
+
+     public void set_initial_duty_status(){
+
+         switch(userSession.get_duty_status()){
+             case "ture":
+                 dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));
+                 on.setButtonDrawable(R.mipmap.onoff_foreground);
+                 off.setButtonDrawable(new StateListDrawable());
+                 house.setButtonDrawable(new StateListDrawable());
+                 car.setVisibility(View.VISIBLE);
+                 ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                 offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                 break;
+
+             case "home":
+                 dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
+                 on.setButtonDrawable(new StateListDrawable());
+                 off.setButtonDrawable(new StateListDrawable());
+                 house.setButtonDrawable(R.mipmap.onoff_foreground);
+                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                 offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                 ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+                 car.setVisibility(View.VISIBLE);
+                 break;
+
+             default:
+                 dutypannel.setBackground(this.getResources().getDrawable(R.drawable.off_duty));
+                 on.setButtonDrawable(new StateListDrawable());
+                 off.setButtonDrawable(R.mipmap.onoff_foreground);
+                 house.setButtonDrawable(new StateListDrawable());
+                 offtext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                 ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+                 car.setVisibility(View.INVISIBLE);
+                 break;
+         }
+     }
+
 }
