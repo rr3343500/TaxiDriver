@@ -25,7 +25,7 @@ public class InternetConnectivity extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent ) {
         userSession=new UserSession(context);
-        String JSON_STRING= "{\"lat\":\""+userSession.getLatitute()+"\",\"long\":\""+userSession.getLogitute()+"\",\"area\":\"morar\",\"type\":\"updateVechleLocation\"}";
+        String JSON_STRING= "{\"lat\":\""+userSession.getLatitute()+"\",\"long\":\""+userSession.getLogitute()+"\",\"area\":\""+userSession.getStreetname()+"\",\"type\":\"updateVechleLocation\"}";
         boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
 
         if(isConnected){

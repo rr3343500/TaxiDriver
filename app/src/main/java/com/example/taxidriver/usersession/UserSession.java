@@ -48,6 +48,9 @@ public class UserSession {
     // logitute number (make variable public to access from outside)
     public static final String LOGITUTE = "logitute";
 
+    // streetname (make variable public to access from outside)
+    public static final String STREETNAME = "streetname";
+
 
     // Mobile number (make variable public to access from outside)
     public static final String DUTY_STATUS = "status";
@@ -206,10 +209,11 @@ public class UserSession {
     /**
      * set current location
      * **/
-    public void setLocation(String lat,String lon)
+    public void setLocation(String lat,String lon ,String streetname)
     {
         editor.putString(LATITUTE,lat);
         editor.putString(LOGITUTE,lon);
+        editor.putString(STREETNAME,streetname);
     }
 
     /**
@@ -226,5 +230,10 @@ public class UserSession {
     public Double getLogitute()
     {
         return Double.parseDouble(pref.getString(LOGITUTE,null));
+    }
+
+    public String getStreetname()
+    {
+        return pref.getString(STREETNAME,null);
     }
 }

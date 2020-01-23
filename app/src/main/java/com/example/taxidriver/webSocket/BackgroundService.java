@@ -47,7 +47,7 @@ public class BackgroundService extends Service {
                 internetConnectivity.setConnect(webSocketConnection);
                 internetConnectivity.onReceive(context,intent);
             }
-        }, 0, 10000);
+        }, 0, 1000);
 
             }
         });

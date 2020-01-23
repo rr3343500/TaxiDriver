@@ -17,6 +17,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.StateListDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 //import android.location.LocationListener;
 import android.location.LocationManager;
@@ -106,6 +108,7 @@ import static com.example.taxidriver.R.color.pin_view;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
+    String streetname;
     RadioButton on,off,house;
     RadioGroup radioGroup;
     TextView ontext,offtext,hometext;
@@ -458,7 +461,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("My Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
             Log.d("location", "Latitude:" + mLastLocation.getLatitude() + "\n" + "Longitude:" + mLastLocation.getLongitude());
-            userSession.setLocation(String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()));
+            Geocoder geocoder= new Geocoder(this);
+            try {
+                List<Address>address=  geocoder.getFromLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude(),1);
+//                Log.e("address", String.valueOf(address.get(0).getFeatureName()));
+                streetname=address.get(0).getFeatureName();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            userSession.setLocation(String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()),streetname);
+
+
         }
         if (startTrack) {
             previouslatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
