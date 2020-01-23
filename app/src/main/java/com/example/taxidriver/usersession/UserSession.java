@@ -38,7 +38,7 @@ public class UserSession {
     public static final String KEY_NAME = "name";
 
     // Email address (make variable public to access from outside)
-    public static final String KEY_EMAIL = "email";
+    public static final String DRIVERID = "driverid";
 
     // Mobile number (make variable public to access from outside)
     public static final String KEY_MOBiLE = "mobile";
@@ -66,15 +66,15 @@ public class UserSession {
     }
 
 
-    public void createLoginSession( String mobile){
+    public void createLoginSession( String mobile ,String driverid){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
 //        editor.putString(KEY_NAME, name);
 
-        // Storing email in pref
-//        editor.putString(KEY_EMAIL, email);
+  //       Storing driverid in pref
+        editor.putString(DRIVERID, driverid);
 
         // Storing phone number in pref
         editor.putString(KEY_MOBiLE, mobile);
@@ -121,7 +121,7 @@ public class UserSession {
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
 
         // user email id
-        user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
+        user.put(DRIVERID, pref.getString(DRIVERID, null));
 
         // user phone number
         user.put(KEY_MOBiLE, pref.getString(KEY_MOBiLE, null));

@@ -33,6 +33,7 @@ public class BackgroundService extends Service {
      //start background service
     public int onStartCommand(final Intent intent, int flags, int startId ) {
         webSocketConnection = new WebSocketConnection();
+        webSocketConnection.setContext(context);
         final InternetConnectivity internetConnectivity= new InternetConnectivity();
         webSocketConnection.onCreate();
         handler = new Handler();

@@ -1,6 +1,11 @@
 //web socket connection class  easy to manuplulate
 package com.example.taxidriver.webSocket;
+import android.content.Context;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.taxidriver.usersession.UserSession;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -13,6 +18,11 @@ public class WebSocketConnection extends AppCompatActivity {
 
     private OkHttpClient client;
     WebSocket ws;
+    Context context;
+
+
+
+
 
 
     // initialize web socket connection
@@ -26,6 +36,15 @@ public class WebSocketConnection extends AppCompatActivity {
     }
     //end  of initialize web socket connection
 
+
+
+    //set context in websocket class
+   public void setContext(Context context)
+   {
+   this.context=context;
+   }
+
+    //set context in websocket class
 
 
 
@@ -65,7 +84,9 @@ public class WebSocketConnection extends AppCompatActivity {
     //initialize web socket listener
     public final class EchoWebSocketListener extends WebSocketListener {
         private static final int NORMAL_CLOSURE_STATUS = 1000;
-        String JSON_STRING = "{\"userID\":\"driver\",\"userType\":\"gefie\",\"type\":\"initiate\"}";
+        UserSession userSession= new UserSession(context);
+        String JSON_STRING = "{\"userID\":\""+userSession.getUserDetails().get("driverid")+"\",\"userType\":\"Driver\",\"type\":\"initiate\"}";
+
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
             webSocket.send(JSON_STRING);

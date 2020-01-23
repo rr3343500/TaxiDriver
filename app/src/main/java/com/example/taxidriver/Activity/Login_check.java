@@ -21,6 +21,8 @@ import com.example.taxidriver.usersession.UserSession;
 import com.goodiebag.pinview.Pinview;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONArray;
+
 public class Login_check extends AppCompatActivity {
     TexiFonts mobile;
     Pinview otp;
@@ -80,9 +82,12 @@ public class Login_check extends AppCompatActivity {
                 if (jsonHelper.isValidJson()) {
                     String response = jsonHelper.GetResult("response");
                     if (response.equals("TRUE")) {
-
-                        UserSession userSession= new UserSession(Login_check.this);
-                        userSession.createLoginSession(mobile);
+                        JSONArray jsonArray = jsonHelper.setChildjsonArray(jsonHelper.getCurrentJsonObj(),"data");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            jsonHelper.setChildjsonObj(jsonArray, i);
+                            UserSession userSession= new UserSession(Login_check.this);
+                            userSession.createLoginSession(mobile,jsonHelper.GetResult("driver_id"));
+                        }
 
                         Intent intent = new Intent(Login_check.this, MainActivity.class);//Home
                         intent.putExtra("mobile",mobile);
