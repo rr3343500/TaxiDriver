@@ -4,14 +4,25 @@ package com.example.taxidriver.usersession;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import com.example.taxidriver.MainActivity;
+import android.util.Log;
+
+import com.example.taxidriver.Map.MainActivity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
+
 import java.util.HashMap;
+
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 /**
  * Created by rrdreamtechnology on 18/01/2020.
  */
 
 public class UserSession {
+
 
     // Shared Preferences
     SharedPreferences pref;
@@ -40,6 +51,9 @@ public class UserSession {
     // Email address (make variable public to access from outside)
     public static final String DRIVERID = "driverid";
 
+    // Email address (make variable public to access from outside)
+    public static final String WEBSOCKET = "websocket";
+
     // Mobile number (make variable public to access from outside)
     public static final String KEY_MOBiLE = "mobile";
     // latitute number (make variable public to access from outside)
@@ -50,6 +64,14 @@ public class UserSession {
 
     // streetname (make variable public to access from outside)
     public static final String STREETNAME = "streetname";
+
+
+    // streetname (make variable public to access from outside)
+    public static final String REQUEST = "request";
+
+
+    // socketconnection (make variable public to access from outside)
+    public static final String SOCKETCONNECTION = "socketconnection";
 
 
     // Mobile number (make variable public to access from outside)
@@ -232,8 +254,57 @@ public class UserSession {
         return Double.parseDouble(pref.getString(LOGITUTE,null));
     }
 
+    /**
+     * get user street loaction
+     * **/
     public String getStreetname()
     {
         return pref.getString(STREETNAME,null);
+    }
+
+    /**
+     * set Socketconnection
+     *
+     * @return**/
+    public boolean getSocketConnection()
+    {
+        return Boolean.valueOf(pref.getString(SOCKETCONNECTION,null));
+    }
+
+    /**
+     * set Socketconnection
+     * **/
+    public void setSocketConnection(Boolean aBoolean)
+    {
+        editor.putString(SOCKETCONNECTION,String.valueOf(aBoolean)).commit();
+    }
+
+
+    public void setbooking(String found){
+        editor.putString(REQUEST,found).commit();
+
+    }
+    public String getbooking() {
+        if (pref.getString(REQUEST, null) == "null") {
+            return "no";
+        }else {
+
+            return pref.getString(REQUEST, null);
+        }
+
+    }
+
+    public void setsocket(WebSocket webSocket){
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        WebSocket json = gson.fromJson((JsonReader) webSocket, WebSocket.class);
+//        String jsonString = gson.toJson(json);
+//        Log.e("tetet",jsonString);
+//        editor.putString(WEBSOCKET, jsonString).apply();
+    }
+
+    public WebSocket getsocket(){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = pref.getString(WEBSOCKET, null);
+        return gson.fromJson(json, WebSocket.class);
     }
 }

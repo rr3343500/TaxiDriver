@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:background="@drawable/request_background">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You Have  New Booking"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:id="@+id/booking"
+            app:fonttype="bold"
+            android:textColor="#000"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:id="@+id/street"
+            android:layout_below="@id/booking"
+            android:orientation="horizontal">
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fonttype="bold"
+            android:textColor="#000"
+            android:textSize="20dp"
+            android:text="Street :" />
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            app:fonttype="bold"
+            android:id="@+id/Streetname"
+            android:textColor="#000"
+            android:text="City Center "
+            android:textSize="20dp"
+            />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/street"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/city"
+            android:layout_marginTop="-20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fonttype="bold"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="City :   " />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                app:fonttype="bold"
+                android:id="@+id/cityname"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="Gwalior "
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/street"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/distance"
+
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fonttype="bold"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="Distance :   " />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                app:fonttype="bold"
+                android:id="@+id/distancekm"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="30 KM "
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/street"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/time"
+
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fonttype="bold"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="Estimated Time :   " />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                app:fonttype="bold"
+                android:id="@+id/triptime"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="30 MIN"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/street"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/price"
+
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fonttype="bold"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="Trip Cost  :   " />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                app:fonttype="bold"
+                android:id="@+id/cost"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:text="₹ 500"
+                />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/city"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+
+            <com.example.taxidriver.extended.ButtonFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Acctept"
+                android:id="@+id/confirm"
+                android:textSize="20dp"
+                android:textColor="@color/Login_button_white"
+                android:background="@color/Logincolor"/>
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

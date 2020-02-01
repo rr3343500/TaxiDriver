@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.example.taxidriver.MainActivity;
+import com.example.taxidriver.Map.MainActivity;
 import com.example.taxidriver.R;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;

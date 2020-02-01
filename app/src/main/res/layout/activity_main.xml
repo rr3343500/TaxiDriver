@@ -3,10 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".Map.MainActivity"
 
     android:orientation="vertical"
     android:id="@+id/constLayout">
+
+<!--    <com.github.ybq.android.spinkit.SpinKitView-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/spin_kit"-->
+<!--        style="@style/SpinKitView.Large.Circle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="gone"-->
+<!--         android:layout_centerInParent="true"-->
+<!--        app:SpinKit_Color="@color/colorAccent" />-->
 
     <fragment
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -67,6 +77,12 @@
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"/>
 
+    <FrameLayout
+        android:id="@+id/dialogfragment"
+        android:layout_centerInParent="true"
+        android:elevation="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

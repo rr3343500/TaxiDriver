@@ -1,4 +1,4 @@
-package com.example.taxidriver;
+package com.example.taxidriver.Map;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;

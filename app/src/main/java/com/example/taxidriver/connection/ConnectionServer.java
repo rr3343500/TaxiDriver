@@ -87,7 +87,7 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
 
 
             request = new DataOutputStream(this.conn.getOutputStream());
-            Log.e("request",this.conn.getOutputStream().toString());
+            Log.e("Request",this.conn.getOutputStream().toString());
 
 
 

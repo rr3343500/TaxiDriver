@@ -1,8 +1,7 @@
-package com.example.taxidriver;
+package com.example.taxidriver.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -11,6 +10,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,29 +30,37 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.example.taxidriver.Activity.Login;
-import com.example.taxidriver.Activity.Login_check;
+import com.example.taxidriver.Distance.DistanceTimeCalculate;
+import com.example.taxidriver.R;
+import com.example.taxidriver.Request.RequestDialog;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
-import com.example.taxidriver.extended.TexiFonts;
 import com.example.taxidriver.usersession.UserSession;
 import com.example.taxidriver.webSocket.BackgroundService;
-import com.example.taxidriver.webSocket.InternetConnectivity;
+import com.example.taxidriver.webSocket.SocketService;
+import com.example.taxidriver.webSocket.WebSocketConnection;
+import com.example.taxidriver.webSocket.WebSocketManupulation;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.location.LocationListener;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -81,12 +89,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -98,16 +102,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 import static com.example.taxidriver.R.color.Login_button_white;
-import static com.example.taxidriver.R.color.Logincolor;
-import static com.example.taxidriver.R.color.login_button;
 import static com.example.taxidriver.R.color.low_text_color;
-import static com.example.taxidriver.R.color.pin_view;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
+    AlertDialog alertBuilder;
     String streetname;
     RadioButton on,off,house;
     RadioGroup radioGroup;
@@ -124,7 +132,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
-    Marker mCurrLocationMarker;
+    Marker mCurrLocationMarker,source,destination;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final int PERMISSION_REQUEST_GPS_CODE = 1234;
     LocationManager locationManager;
@@ -137,7 +145,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     boolean startTrack = false;
     ArrayList<LatLng> points;
     LatLng previouslatLng;
-    Marker m ;
     private Location previousLocation;
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -152,12 +159,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     //  private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
-    private Location mCurrentLocation;
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
     LinearLayout dutypannel;
     BackgroundService backgroundService;
     Intent intent;
+    SocketService socketService;
 
 
     //oncreate method
@@ -165,8 +172,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         userSession = new UserSession(MainActivity.this);
+        userSession = new UserSession(MainActivity.this);
+        socketService= new SocketService(this);
+         userSession.setSocketConnection(false);
+
          // get id of layout
+//        progress = findViewById(R.id.spin_kit);
         radioGroup = findViewById(R.id.duty);
         dutypannel=findViewById(R.id.dutypannel);
         on= findViewById(R.id.on);
@@ -174,37 +185,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         house= findViewById(R.id.home);
         ontext= findViewById(R.id.on_text);
         offtext= findViewById(R.id.off_text);
-        hometext= findViewById(R.id.home_text);
+//        hometext= findViewById(R.id.home_text);
         car= findViewById(R.id.car);
-        set_initial_duty_status();
+//        set_initial_duty_status();
 
         // initiate background services
           backgroundService= new BackgroundService(this);
+//          webSocketConnection= new WebSocketConnection();
           intent= new Intent(MainActivity.this,BackgroundService.class);
         //end  initiate background services
-
-
-
-
-  //       Read from the database
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("confirm");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                String value = dataSnapshot.getValue(String.class);
-//                Log.d(TAG, "Value is: " + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read value.", error.toException());
-//            }
-//        });
-
 
 
         //on duty/off duty
@@ -214,43 +203,48 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.on:
-                        backgroundService.onStartCommand(intent,1,1);
+//                        backgroundService.onCreate();
+                         socketService.onStartCommand(intent,1,1);
                         userSession.set_current_duty_status("ture");
                          dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));
                          Duty_responce(userSession.get_mobile(),"true");
                          on.setButtonDrawable(R.mipmap.onoff_foreground);
                          off.setButtonDrawable(new StateListDrawable());
-                         house.setButtonDrawable(new StateListDrawable());
+//                         house.setButtonDrawable(new StateListDrawable());
                          car.setVisibility(View.VISIBLE);
                          ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                          offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                         hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                         hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                            backgroundService.onStartCommand(intent, 1, 1);
                          break;
                     case R.id.off:
-                        backgroundService.onDestroy();
+//                        if(userSession.getSocketConnection())
+//                        {
+//                            backgroundService.onDestroy();
+//                        }
                         userSession.set_current_duty_status("false");
                         dutypannel.setBackground(getResources().getDrawable(R.drawable.off_duty));
                         Duty_responce(userSession.get_mobile(),"false");
                         on.setButtonDrawable(new StateListDrawable());
                         off.setButtonDrawable(R.mipmap.onoff_foreground);
-                        house.setButtonDrawable(new StateListDrawable());
+//                        house.setButtonDrawable(new StateListDrawable());
                         offtext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
-                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+//                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                         car.setVisibility(View.INVISIBLE);
                         break;
-                    case R.id.home:
-                        userSession.set_current_duty_status("home");
-                        dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
-                        Duty_responce(userSession.get_mobile(),"home");
-                        on.setButtonDrawable(new StateListDrawable());
-                        off.setButtonDrawable(new StateListDrawable());
-                        house.setButtonDrawable(R.mipmap.onoff_foreground);
-                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
-                        offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                        ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                        car.setVisibility(View.VISIBLE);
-                        break;
+//                    case R.id.home:
+//                        userSession.set_current_duty_status("home");
+//                        dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
+//                        Duty_responce(userSession.get_mobile(),"home");
+//                        on.setButtonDrawable(new StateListDrawable());
+//                        off.setButtonDrawable(new StateListDrawable());
+//                        house.setButtonDrawable(R.mipmap.onoff_foreground);
+//                        hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+//                        offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                        ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                        car.setVisibility(View.VISIBLE);
+//                        break;
                 }
             }
         });
@@ -325,6 +319,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //get gps permission by user
     }
     //oncreate method
+
 
     //place adapter for fatching places
     private AdapterView.OnItemClickListener mAutocompleteClickListener
@@ -426,9 +421,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
-        mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient2);
-        Log.i(TAG, "Google Places API connected.");
+            Log.i("google api client", String.valueOf(mGoogleApiClient.isConnected()));
+            if(mGoogleApiClient.isConnected())
+            {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+                mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient);
+                Log.i(TAG, "Google Places API connected.");
+              }
+            else {
+            Log.i(TAG, "Google Places API not  connected.");
+                Toast.makeText(this, "google api client is not connected", Toast.LENGTH_SHORT).show();
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient2.disconnect();
+            buildGoogleApiClient();
+//            onConnected(bundle);
+
+            }
+
+
+
+
     }
     //end of connected google map api
 
@@ -456,28 +468,43 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        View view = null;
         if (mCurrLocationMarker == null) {
             LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("My Location"));
+
+            if(source!=null){
+                source.remove();
+            }
+            if(destination!=null){
+                drawRoute(view);
+            }
+            source =  mMap.addMarker(new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("My Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+
             Log.d("location", "Latitude:" + mLastLocation.getLatitude() + "\n" + "Longitude:" + mLastLocation.getLongitude());
+
+
+
+
+
             Geocoder geocoder= new Geocoder(this);
             try {
                 List<Address>address=  geocoder.getFromLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude(),1);
-//                Log.e("address", String.valueOf(address.get(0).getFeatureName()));
-                streetname=address.get(0).getFeatureName();
+                streetname=address.get(0).getLocality();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
             userSession.setLocation(String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()),streetname);
+//            Toast.makeText(this, "ernrrwiornoinrnrknk44i", Toast.LENGTH_SHORT).show();
+
 
 
         }
         if (startTrack) {
             previouslatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            if  (m != null)
-                m.remove();
+            if  (destination != null)
+//                destination.remove();
             if (origin.latitude != mLastLocation.getLatitude()  && origin.longitude != mLastLocation.getLongitude() ) {
             }
             double rota = 0.0;
@@ -486,11 +513,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 rota = bearingBetweenLocations(previouslatLng, new LatLng(destLat,destLong));
             }
             previousLocation = location;
-            Log.e(TAG, "Firing onLocationChanged..........................");
-            Log.e(TAG, "lat :" + location.getLatitude() + "long :" + location.getLongitude());
-            Log.e(TAG, "bearing :" + location.getBearing());
+//            Log.e(TAG, "Firing onLocationChanged..........................");
+//            Log.e(TAG, "lat :" + location.getLatitude() + "long :" + location.getLongitude());
+//            Log.e(TAG, "bearing :" + location.getBearing());
 
         }
+
     }
     //end of method to get updated location
 
@@ -514,7 +542,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+                // sees the explanation, try again to Request the permission.
                 new AlertDialog.Builder(this).setTitle("Location Permission Needed").setMessage("This app needs the Location permission, please accept to use location functionality")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
@@ -530,7 +558,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
             } else {
-                // No explanation needed, we can request the permission.
+                // No explanation needed, we can Request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -562,7 +590,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
+                // If Request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -628,8 +656,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void Source(Double lat,Double log ,String msg){
         LatLng current;
         current = new LatLng(lat,log);
-        m = mMap.addMarker(new MarkerOptions().draggable(true).title(msg).
-                position(current).icon(BitmapDescriptorFactory.fromResource(R.drawable.walk)));
+        destination = mMap.addMarker(new MarkerOptions().draggable(true).title(msg).
+                position(current).icon(BitmapDescriptorFactory.fromResource(R.drawable.customer)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 current, 16));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
@@ -652,7 +680,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Double  Lati=26.236280;
         Double  Logi=78.179939;
 
-
+//        DistanceTimeCalculate distanceTimeCalculate =new DistanceTimeCalculate(Lati,Logi,mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
         origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 //        origin = new LatLng(26.236285,78.179939);
@@ -690,13 +718,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Sensor enabled
         String sensor = "sensor=false";
 
-        // Building the parameters to the web service
+        // Building the parameters to the web SocketService
         String parameters = str_origin + "&" + str_dest + "&" + sensor;
 
         // Output format
         String output = "json";
 
-        // Building the url to the web service
+        // Building the url to the web SocketService
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters
                 + "&key=" + "AIzaSyApe8T3JMiqj9OgEbqd--zTBfl3fibPeEs";
 
@@ -712,11 +740,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected String doInBackground(String... url) {
 
-            // For storing data from web service
+            // For storing data from web SocketService
             String data = "";
 
             try {
-                // Fetching the data from web service
+                // Fetching the data from web SocketService
                 data = downloadUrl(url[0]);
                 Log.e("Background Task data", data.toString());
             } catch (Exception e) {
@@ -835,9 +863,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(10);
-                lineOptions.color(Color.RED);
-
+                lineOptions.width(5);
+                lineOptions.color(Color.BLUE);
                 Log.d("onPostExecute", "onPostExecute lineoptions decoded");
 
             }
@@ -856,7 +883,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onDestroy();
         mGoogleApiClient.disconnect();
         mGoogleApiClient2.disconnect();
+        userSession.setSocketConnection(false);
     }
+
+
 
 
 
@@ -866,7 +896,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
+            // here to Request the missing permissions, and then overriding
 //               public void onRequestPermissionsResult(int requestCode, String[] permissions,
 //                                                      int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
@@ -917,7 +947,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = mMap.getProjection();
-        Point startPoint = proj.toScreenLocation(m.getPosition());
+        Point startPoint = proj.toScreenLocation(source.getPosition());
         final LatLng startLatLng = proj.fromScreenLocation(startPoint);
         final long duration = 5000;
 
@@ -933,16 +963,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         * startLatLng.longitude;
                 double lat = t * toPosition.latitude + (1 - t)
                         * startLatLng.latitude;
-                m.setPosition(new LatLng(lat, lng));
+                source.setPosition(new LatLng(lat, lng));
 
                 if (t < 1.0) {
                     // Post again 16ms later.
                     handler.postDelayed(this, 16);
                 } else {
                     if (hideMarke) {
-                        m.setVisible(false);
+                        source.setVisible(false);
                     } else {
-                        m.setVisible(true);
+                        source.setVisible(true);
                     }
                 }
             }
@@ -1006,35 +1036,51 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                  dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));
                  on.setButtonDrawable(R.mipmap.onoff_foreground);
                  off.setButtonDrawable(new StateListDrawable());
-                 house.setButtonDrawable(new StateListDrawable());
+//                 house.setButtonDrawable(new StateListDrawable());
                  car.setVisibility(View.VISIBLE);
                  ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                  offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
                  break;
 
-             case "home":
-                 dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
-                 on.setButtonDrawable(new StateListDrawable());
-                 off.setButtonDrawable(new StateListDrawable());
-                 house.setButtonDrawable(R.mipmap.onoff_foreground);
-                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
-                 offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                 ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
-                 car.setVisibility(View.VISIBLE);
-                 break;
+//             case "home":
+//                 dutypannel.setBackground(getResources().getDrawable(R.drawable.home_duty));
+//                 on.setButtonDrawable(new StateListDrawable());
+//                 off.setButtonDrawable(new StateListDrawable());
+//                 house.setButtonDrawable(R.mipmap.onoff_foreground);
+//                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+//                 offtext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                 ontext.setTextColor(ContextCompat.getColor(MainActivity.this, low_text_color));
+//                 car.setVisibility(View.VISIBLE);
+//                 break;
 
              default:
                  dutypannel.setBackground(this.getResources().getDrawable(R.drawable.off_duty));
                  on.setButtonDrawable(new StateListDrawable());
                  off.setButtonDrawable(R.mipmap.onoff_foreground);
-                 house.setButtonDrawable(new StateListDrawable());
+//                 house.setButtonDrawable(new StateListDrawable());
                  offtext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                  ontext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
-                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
+//                 hometext.setTextColor(ContextCompat.getColor(MainActivity.this, Login_button_white));
                  car.setVisibility(View.INVISIBLE);
                  break;
          }
      }
+
+
+public  void request(){
+    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+    builder.setTitle("Error").setMessage("vhgvgh").setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int id) {
+            dialog.cancel();
+        }
+    });
+    AlertDialog alert = builder.create();
+    alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+    alert.show();
+
+}
+
+
 
 }

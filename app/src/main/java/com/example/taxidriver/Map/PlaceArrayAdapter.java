@@ -1,4 +1,4 @@
-package com.example.taxidriver;
+package com.example.taxidriver.Map;
 
 import android.content.Context;
 import android.util.Log;
