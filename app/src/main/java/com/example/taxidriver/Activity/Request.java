@@ -29,7 +29,9 @@ import okhttp3.WebSocketListener;
 
 public class Request extends AppCompatActivity {
     Button confirm;
-    Intent intent;
+    UserSession userSession;
+
+
 
 
 
@@ -40,22 +42,51 @@ public class Request extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+        userSession= new UserSession(this);
 
-
-        intent=getIntent();
+       Intent intent=getIntent();
         final String d=intent.getStringExtra("data");
         confirm=findViewById(R.id.confirm);
 
-//        Log.e("fghg",d);
 
    confirm.setOnClickListener(new View.OnClickListener() {
        @Override
        public void onClick(View view) {
+          // Intent5 intent1= new Intent(SocketService.class.getName());
+
            Intent intent1= new Intent(Request.this,SocketService.class);
            intent1.putExtra("data",d);
+         //  intent1.putExtra("action",R.string.SERVICE_ACCEPT_REQUEST+".ACTION");
+          // intent1.setPackage(R.string.SERVICE_ACCEPT_REQUEST);
            startService(intent1);
+           userSession.Booking("true");
+           onBackPressed();
        }
    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //        String object= intent.getStringExtra("data");
@@ -91,9 +122,10 @@ public class Request extends AppCompatActivity {
 
     }
 
-    @Override
+
     public void onBackPressed() {
-        super.onBackPressed();
+     Intent intent= new Intent(Request.this,MainActivity.class);
+     startActivity(intent);
     }
 
     public void Savetomysql(String driverid, String clientid, String pickuplat, String pickuplong, String droplat, String droplong){

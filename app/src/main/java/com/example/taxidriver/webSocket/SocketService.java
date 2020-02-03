@@ -13,6 +13,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.example.taxidriver.Activity.Login;
 import com.example.taxidriver.Map.MainActivity;
 import com.example.taxidriver.usersession.UserSession;
 
@@ -57,8 +59,8 @@ public class SocketService extends android.app.Service {
 
 //        Intent data =Intent.getIntent();
         if(intent.getExtras() != null ){
-            String data = intent.getStringExtra("dffd");
-//            Log.e("ddf",data);
+            String data = intent.getStringExtra("data");
+            Log.e("ddf",data);
 
             try {
                 JSONObject mainObject = new JSONObject(data);
@@ -110,10 +112,8 @@ public class SocketService extends android.app.Service {
                           Intent intent1 = new Intent(context , com.example.taxidriver.Activity.Request.class);
                           intent1.putExtra("data",JSON_STRING);
                           context.startActivity(intent1);
-
-
-
-                            webSocket.send(JSON_STRING);
+                            Animatoo.animateShrink(context);
+//                         webSocket.send(JSON_STRING);
 //                    sendRequest(text,webSocket);
                             break;
                         case "dhioj":
@@ -165,18 +165,6 @@ public class SocketService extends android.app.Service {
         ws = client.newWebSocket(request, webSocketListener);
         client.dispatcher().executorService();
 
-
-
-        switch (type)
-        {
-            case "requset":
-                ws.send(requestdata);
-                break;
-
-            default:
-                break;
-        }
-
         handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -199,13 +187,29 @@ public class SocketService extends android.app.Service {
 
 
 
+        switch (type)
+        {
+            case "requset":
+                ws.send(requestdata);
+                break;
+
+            default:
+                break;
+        }
 
 
-                return START_NOT_STICKY;
+
+
+        return START_NOT_STICKY;
     }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+
+        Log.e("Hello","HELLO");
+
         return null;
     }
 }
+

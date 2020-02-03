@@ -53,6 +53,8 @@ import com.example.taxidriver.Request.RequestDialog;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
+import com.example.taxidriver.extended.ButtonFonts;
+import com.example.taxidriver.extended.TexiFonts;
 import com.example.taxidriver.usersession.UserSession;
 import com.example.taxidriver.webSocket.BackgroundService;
 import com.example.taxidriver.webSocket.SocketService;
@@ -113,10 +115,7 @@ import static com.example.taxidriver.R.color.Login_button_white;
 import static com.example.taxidriver.R.color.low_text_color;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
     private GoogleMap mMap;
-    AlertDialog alertBuilder;
-    String streetname;
     RadioButton on,off,house;
     RadioGroup radioGroup;
     TextView ontext,offtext,hometext;
@@ -125,13 +124,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private GoogleApiClient mGoogleApiClient2;
     public UserSession userSession;
-    double destLat;
-    double destLong;
-    String api_token, address;
+    double destLat,destLong;
+    String  address, streetname;
     AutoCompleteTextView destinationET;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
+    Location mLastLocation, previousLocation;
     Marker mCurrLocationMarker,source,destination;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final int PERMISSION_REQUEST_GPS_CODE = 1234;
@@ -139,32 +137,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     boolean isGPS;
     private PlaceArrayAdapter mPlaceArrayAdapter;
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
-    LatLng origin;
-    LatLng dest;
+    LatLng origin,dest,previouslatLng;
     PolylineOptions lineOptions;
     boolean startTrack = false;
     ArrayList<LatLng> points;
-    LatLng previouslatLng;
-    private Location previousLocation;
-    // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    // fastest updates interval - 5 sec
-    // location updates will be received if another app is requesting the locations
-    // than your app can handle
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-    private static final int REQUEST_CHECK_SETTINGS = 100;
-    // bunch of location related apis
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
-    //  private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
-    // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
-    LinearLayout dutypannel;
+    LinearLayout dutypannel, delivery, navigatepannel;
     BackgroundService backgroundService;
     Intent intent;
     SocketService socketService;
+    View topbar,incentivepannel,bottom_menu;
+    ButtonFonts navigate;
 
 
     //oncreate method
@@ -177,7 +166,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
          userSession.setSocketConnection(false);
 
          // get id of layout
-//        progress = findViewById(R.id.spin_kit);
         radioGroup = findViewById(R.id.duty);
         dutypannel=findViewById(R.id.dutypannel);
         on= findViewById(R.id.on);
@@ -185,13 +173,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         house= findViewById(R.id.home);
         ontext= findViewById(R.id.on_text);
         offtext= findViewById(R.id.off_text);
-//        hometext= findViewById(R.id.home_text);
+        delivery= findViewById(R.id.delivery);
         car= findViewById(R.id.car);
-//        set_initial_duty_status();
+        topbar= findViewById(R.id.topbar);
+        incentivepannel= findViewById(R.id.incentivepannel);
+        navigate= findViewById(R.id.navigate);
+        bottom_menu= findViewById(R.id.bottommenu);
+        navigatepannel= findViewById(R.id.navigatepannel);
 
+        setbooking();
+//        set_initial_duty_status();
         // initiate background services
           backgroundService= new BackgroundService(this);
-//          webSocketConnection= new WebSocketConnection();
           intent= new Intent(MainActivity.this,BackgroundService.class);
         //end  initiate background services
 
@@ -657,7 +650,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng current;
         current = new LatLng(lat,log);
         destination = mMap.addMarker(new MarkerOptions().draggable(true).title(msg).
-                position(current).icon(BitmapDescriptorFactory.fromResource(R.drawable.customer)));
+                position(current).icon(BitmapDescriptorFactory.fromResource(R.drawable.walk)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 current, 16));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
@@ -1068,18 +1061,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      }
 
 
-public  void request(){
-    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-    builder.setTitle("Error").setMessage("vhgvgh").setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int id) {
-            dialog.cancel();
-        }
-    });
-    AlertDialog alert = builder.create();
-    alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-    alert.show();
-
-}
+     public void  setbooking()
+     {
+         if(userSession.getbookingstatus())
+         {
+             delivery.setVisibility(View.VISIBLE);
+             navigatepannel.setVisibility(View.VISIBLE);
+             topbar.setVisibility(View.GONE);
+             bottom_menu.setVisibility(View.GONE);
+             incentivepannel.setVisibility( View.GONE);
+         }
+     }
 
 
 

@@ -74,6 +74,10 @@ public class UserSession {
     public static final String SOCKETCONNECTION = "socketconnection";
 
 
+    // socketconnection (make variable public to access from outside)
+    public static final String BOOKINGSTATUS = "false";
+
+
     // Mobile number (make variable public to access from outside)
     public static final String DUTY_STATUS = "status";
 
@@ -307,4 +311,18 @@ public class UserSession {
         String json = pref.getString(WEBSOCKET, null);
         return gson.fromJson(json, WebSocket.class);
     }
+
+
+    public  void  Booking(String booking)
+    {
+        editor.putString(BOOKINGSTATUS,booking).commit();
+    }
+
+
+    public  Boolean getbookingstatus()
+    {
+        return Boolean.valueOf(pref.getString(BOOKINGSTATUS,null));
+    }
+
+
 }

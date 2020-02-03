@@ -42,8 +42,8 @@ public class Welcome extends AppCompatActivity {
             setting();
         }
 
-
         session =new UserSession(Welcome.this);
+        session.Booking("false");
         session.checkLogin();
 
         new Handler().postDelayed(new Runnable() {

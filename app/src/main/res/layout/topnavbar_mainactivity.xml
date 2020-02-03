@@ -12,10 +12,10 @@
         android:background="@color/Logincolor">
 
         <ImageView
-            android:layout_width="50dp"
+            android:layout_width="70dp"
             android:id="@+id/car"
             android:layout_height="wrap_content"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:visibility="invisible"
             android:layout_gravity="center_vertical"
             android:src="@drawable/car1" />

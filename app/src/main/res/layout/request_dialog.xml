@@ -5,23 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:background="@drawable/request_background">
+    android:background="@drawable/backcopy"
+
+    >
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="90dp"
         android:gravity="center_vertical"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="-100dp"
+
         android:orientation="vertical">
 
         <com.example.taxidriver.extended.TexiFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="You Have  New Booking"
-            android:textAlignment="center"
-            android:textSize="20dp"
+            android:textAlignment="textStart"
+            android:textSize="22dp"
             android:id="@+id/booking"
             app:fonttype="bold"
             android:textColor="#000"
@@ -36,22 +40,23 @@
             android:layout_below="@id/booking"
             android:orientation="horizontal">
         <com.example.taxidriver.extended.TexiFonts
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             app:fonttype="bold"
             android:textColor="#000"
-            android:textSize="20dp"
+            android:textSize="15dp"
             android:text="Street :" />
 
         <com.example.taxidriver.extended.TexiFonts
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             app:fonttype="bold"
+            android:textAlignment="textStart"
             android:id="@+id/Streetname"
             android:textColor="#000"
             android:text="City Center "
-            android:textSize="20dp"
+            android:textSize="15dp"
             />
         </LinearLayout>
 
@@ -65,11 +70,11 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 app:fonttype="bold"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="City :   " />
 
             <com.example.taxidriver.extended.TexiFonts
@@ -79,7 +84,7 @@
                 app:fonttype="bold"
                 android:id="@+id/cityname"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="Gwalior "
                 />
         </LinearLayout>
@@ -95,11 +100,11 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 app:fonttype="bold"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="Distance :   " />
 
             <com.example.taxidriver.extended.TexiFonts
@@ -109,7 +114,7 @@
                 app:fonttype="bold"
                 android:id="@+id/distancekm"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="30 KM "
                 />
         </LinearLayout>
@@ -124,12 +129,12 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 app:fonttype="bold"
                 android:textColor="#000"
-                android:textSize="20dp"
-                android:text="Estimated Time :   " />
+                android:textSize="15dp"
+                android:text="Time :   " />
 
             <com.example.taxidriver.extended.TexiFonts
                 android:layout_width="wrap_content"
@@ -138,7 +143,7 @@
                 app:fonttype="bold"
                 android:id="@+id/triptime"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="30 MIN"
                 />
         </LinearLayout>
@@ -154,11 +159,11 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 app:fonttype="bold"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="Trip Cost  :   " />
 
             <com.example.taxidriver.extended.TexiFonts
@@ -168,10 +173,16 @@
                 app:fonttype="bold"
                 android:id="@+id/cost"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="₹ 500"
                 />
         </LinearLayout>
+
+
+
+
+
+
 
 
 
@@ -179,27 +190,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/city"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_gravity="left"
+            android:layout_marginRight="35dp"
             android:orientation="horizontal">
 
 
             <com.example.taxidriver.extended.ButtonFonts
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Acctept"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="ACCEPT"
                 android:id="@+id/confirm"
-                android:textSize="20dp"
+                android:textSize="15dp"
+
                 android:textColor="@color/Login_button_white"
-                android:background="@color/Logincolor"/>
+                android:background="@drawable/requst_background_button"/>
         </LinearLayout>
-
-
-
-
-
-
 
 
 
@@ -208,5 +215,7 @@
 
 
     </LinearLayout>
+
+
 
 </LinearLayout>

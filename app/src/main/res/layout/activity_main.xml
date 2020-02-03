@@ -8,15 +8,6 @@
     android:orientation="vertical"
     android:id="@+id/constLayout">
 
-<!--    <com.github.ybq.android.spinkit.SpinKitView-->
-<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--        android:id="@+id/spin_kit"-->
-<!--        style="@style/SpinKitView.Large.Circle"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:visibility="gone"-->
-<!--         android:layout_centerInParent="true"-->
-<!--        app:SpinKit_Color="@color/colorAccent" />-->
 
     <fragment
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -33,15 +24,88 @@
         map:layout_constraintTop_toBottomOf="@+id/destination_ET" />
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:id="@+id/delivery"
+        android:visibility="gone"
+        android:background="#fff"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PICKUP ADDRESS"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="20dp"/>
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="maharaj bada, madhav, near andra bank ganj"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="1dp"
+            android:background="@color/login_button"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PICKUP TIME "
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="20dp"/>
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="02:30 PM"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
     <include layout="@layout/topnavbar_mainactivity"
         android:layout_width="wrap_content"
         android:id="@+id/topbar"
+        android:visibility="visible"
         android:layout_height="70dp"
         />
 
     <include layout="@layout/incentive_pannel"
         android:layout_width="match_parent"
         android:layout_below="@id/topbar"
+        android:visibility="visible"
+        android:id="@+id/incentivepannel"
         android:layout_height="wrap_content"/>
 
 
@@ -61,15 +125,51 @@
         map:layout_constraintHorizontal_bias="0.0" />
 
 
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:weightSum="2"
+       android:visibility="gone"
+       android:id="@+id/navigatepannel"
+       android:layout_marginBottom="20dp"
+       android:layout_alignParentBottom="true"
+       android:orientation="horizontal"
+       >
 
-    <com.example.taxidriver.extended.ButtonFonts
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="#000"
-        android:onClick="drawRoute"
-        android:hint="Start"
-        android:layout_above="@id/bottommenu"
-       />
+       <com.example.taxidriver.extended.ButtonFonts
+           android:layout_width="wrap_content"
+           android:layout_weight="1"
+           android:layout_height="30dp"
+           android:textColorHint="#000"
+           android:id="@+id/navigate"
+           android:layout_margin="20dp"
+           android:layout_gravity="center_vertical|center_horizontal"
+           android:onClick="drawRoute"
+           android:text="NAVIGATE "
+           android:textColor="@color/Login_button_white"
+           android:visibility="visible"
+           android:background="@drawable/navigate_button"
+
+           />
+
+       <com.example.taxidriver.extended.ButtonFonts
+           android:layout_width="wrap_content"
+           android:layout_height="30dp"
+           android:textColorHint="#000"
+           android:layout_weight="1"
+           android:id="@+id/clientlocated"
+           android:onClick="drawRoute"
+           android:text=" CLIENT LOCATED"
+           android:visibility="visible"
+           android:layout_margin="20dp"
+           android:textColor="@color/Login_button_white"
+           android:layout_gravity="center_vertical|center_horizontal"
+           android:background="@drawable/client_located_background"
+
+           />
+
+   </LinearLayout>
+
 
     <include layout="@layout/activity_bottom_menu"
         android:layout_width="match_parent"
