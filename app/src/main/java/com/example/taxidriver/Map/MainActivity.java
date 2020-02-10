@@ -162,7 +162,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userSession = new UserSession(MainActivity.this);
-        socketService= new SocketService(this);
+
          userSession.setSocketConnection(false);
 
          // get id of layout
@@ -197,6 +197,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 switch(checkedId){
                     case R.id.on:
 //                        backgroundService.onCreate();
+                        socketService= new SocketService();
+                        socketService.setdata(MainActivity.this);
                          socketService.onStartCommand(intent,1,1);
                         userSession.set_current_duty_status("ture");
                          dutypannel.setBackground(getResources().getDrawable(R.drawable.top_bar));

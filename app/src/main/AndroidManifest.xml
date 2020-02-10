@@ -16,6 +16,7 @@
 
 
     <application
+        android:name=".Globalcontext"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:isolatedProcess="true"
@@ -45,6 +46,13 @@
 
         <uses-library android:name="com.example.taxidriver" android:required="false"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+        <service
+            android:name=".webSocket.SocketService"
+            android:enabled="true"
+            android:label="My Service" >
+        </service>
+
 
     </application>
 
