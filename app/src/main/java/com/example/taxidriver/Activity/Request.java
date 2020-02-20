@@ -3,11 +3,15 @@ package com.example.taxidriver.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.taxidriver.Distance.DistanceTimeCalculate;
 import com.example.taxidriver.Map.MainActivity;
@@ -15,14 +19,19 @@ import com.example.taxidriver.R;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
+import com.example.taxidriver.extended.TexiFonts;
 import com.example.taxidriver.usersession.UserSession;
 import com.example.taxidriver.webSocket.BackgroundService;
 import com.example.taxidriver.webSocket.InternetConnectivity;
 import com.example.taxidriver.webSocket.SocketService;
 import com.example.taxidriver.webSocket.WebSocketManupulation;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -30,8 +39,11 @@ import okhttp3.WebSocketListener;
 public class Request extends AppCompatActivity {
     Button confirm;
     UserSession userSession;
-
-
+    String piclat,piclong,droplat,droplong ,d;
+    Geocoder geocoder;
+    List<Address> address = null;
+    TexiFonts add, bookingtype,time;
+    LinearLayout duration;
 
 
 
@@ -39,86 +51,114 @@ public class Request extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.request_dialog);
+        setContentView(R.layout.request);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         userSession= new UserSession(this);
+        add= findViewById(R.id.address);
+        bookingtype= findViewById(R.id.booktype);
+        confirm = findViewById(R.id.request1);
+        duration = findViewById(R.id.duration);
+        time = findViewById(R.id.time);
 
-       Intent intent=getIntent();
-        final String d=intent.getStringExtra("data");
-        confirm=findViewById(R.id.confirm);
+       final Intent intent=getIntent();
+
+       switch (intent.getStringExtra("book"))
+       {
+           case "daily":
+               d = intent.getStringExtra("data");
+//               confirm = findViewById(R.id.confirm);
+               userSession.setClientid(intent.getStringExtra("clientid"));
+               userSession.setpiclat(intent.getStringExtra("plat"));
+               userSession.setpiclong(intent.getStringExtra("plong"));
+               userSession.setdroplat(intent.getStringExtra("dlat"));
+               userSession.setdroplong(intent.getStringExtra("dlong"));
+               userSession.setBookingtype(intent.getStringExtra("book"));
+
+               Geocoder geocoder = new Geocoder(this);
+               try {
+                   address = geocoder.getFromLocation(Double.parseDouble(intent.getStringExtra("plat")), Double.parseDouble(intent.getStringExtra("plong")), 1);
+                   String clientaddress = address.get(0).getAddressLine(0);
+                   userSession.setClientaddress(clientaddress);
+                   add.setText(clientaddress);
+                   bookingtype.setText(intent.getStringExtra("book"));
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+               break;
+
+           case "rental":
+               d = intent.getStringExtra("data");
+
+               userSession.setRentaldetail(intent.getStringExtra("clientid"),intent.getStringExtra("plat"),intent.getStringExtra("plong"),intent.getStringExtra("pickupcity"),intent.getStringExtra("timeduration"));
+               userSession.setBookingtype(intent.getStringExtra("book"));
+                geocoder = new Geocoder(this);
+               try {
+                   address = geocoder.getFromLocation(Double.parseDouble(intent.getStringExtra("plat")), Double.parseDouble(intent.getStringExtra("plong")), 1);
+                   String clientaddress = address.get(0).getAddressLine(0);
+                   userSession.setClientaddress(clientaddress);
+                   add.setText(clientaddress);
+                   duration.setVisibility(View.VISIBLE);
+                   time.setText(intent.getStringExtra("timeduration"));
+                   bookingtype.setText(intent.getStringExtra("book"));
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+               break;
+
+           case "OutStation":
+               d = intent.getStringExtra("data");
+//               confirm = findViewById(R.id.confirm);
+               userSession.setClientid(intent.getStringExtra("clientid"));
+               userSession.setpiclat(intent.getStringExtra("plat"));
+               userSession.setpiclong(intent.getStringExtra("plong"));
+               userSession.setdroplat(intent.getStringExtra("dlat"));
+               userSession.setdroplong(intent.getStringExtra("dlong"));
+               userSession.setBookingtype(intent.getStringExtra("book"));
+
+               geocoder = new Geocoder(this);
+               try {
+                   address = geocoder.getFromLocation(Double.parseDouble(intent.getStringExtra("plat")), Double.parseDouble(intent.getStringExtra("plong")), 1);
+                   String clientaddress = address.get(0).getAddressLine(0);
+                   userSession.setClientaddress(clientaddress);
+                   add.setText(clientaddress);
+                   bookingtype.setText(intent.getStringExtra("book"));
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           break;
+       }
+
+
+
+
+//       if(intent.getStringExtra("book")=="daily")
+//       {
+//
+//       }
+
 
 
    confirm.setOnClickListener(new View.OnClickListener() {
        @Override
        public void onClick(View view) {
-          // Intent5 intent1= new Intent(SocketService.class.getName());
-
-           Intent intent1= new Intent(Request.this,SocketService.class);
-           intent1.putExtra("data",d);
-         //  intent1.putExtra("action",R.string.SERVICE_ACCEPT_REQUEST+".ACTION");
-          // intent1.setPackage(R.string.SERVICE_ACCEPT_REQUEST);
-           startService(intent1);
+           if("daily".equals(userSession.getBookingtype()))
+           {
+               Savetomysql(userSession.getUserDetails().get("driverid"),intent.getStringExtra("clientid"),intent.getStringExtra("plat"),intent.getStringExtra("plong"),intent.getStringExtra("dlat"),intent.getStringExtra("dlong"));
+           }
+           else
+           {
+               Savetomysql(userSession.getUserDetails().get("driverid"),intent.getStringExtra("clientid"),intent.getStringExtra("plat"),intent.getStringExtra("plong"),"null","null");
+           }
+           userSession.set_requestdata(d);
+//           Intent intent1= new Intent(Request.this,SocketService.class);
+//           intent1.putExtra("data",d);
+//           startService(intent1);
            userSession.Booking("true");
-           onBackPressed();
+             onBackPressed();
        }
    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        String object= intent.getStringExtra("data");
-//        Log.e("sdsdf",object);
-//
-//        try {
-//
-//            this.webSocket=c;
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        try {
-//            mainObject = new JSONObject(data);
-//            JSONObject clientdata = mainObject.getJSONObject("data");
-//             pickuplat=clientdata.getString("pickuplat");
-//             picklong=clientdata.getString("pickuplong");
-//             droplat=clientdata.getString("droplat");
-//             droplong=clientdata.getString("droplong");
-//             clientid=clientdata.getString("userId");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//                 distanceTimeCalculate= new DistanceTimeCalculate(pickuplat,picklong,droplat,droplong);
-
-
-
-
-
 
 
     }
@@ -140,6 +180,8 @@ public class Request extends AppCompatActivity {
         connectionServer.buildParameter("pickuplong",pickuplong);
         connectionServer.buildParameter("droplat",droplat);
         connectionServer.buildParameter("droplong",droplong);
+        Log.e("track",userSession.gettrackid());
+        connectionServer.buildParameter("trackid",userSession.gettrackid());
 
         connectionServer.execute(new ConnectionServer.AsyncResponse() {
             @Override
@@ -149,11 +191,12 @@ public class Request extends AppCompatActivity {
                 if (jsonHelper.isValidJson()) {
                     String response = jsonHelper.GetResult("response");
                     if (response.equals("TRUE")) {
-//                        remove_progress_Dialog();
-                    }
-                    else
-                    {
-//                        remove_progress_Dialog();
+//                        JSONArray jsonArray = jsonHelper.setChildjsonArray(jsonHelper.getCurrentJsonObj(),"data");
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            jsonHelper.setChildjsonObj(jsonArray, i);
+//                            Log.e("trackid", jsonHelper.GetResult("trackid"));
+//                            userSession.settrackid(jsonHelper.GetResult("trackid"));
+//                        }
 
                     }
                 }
@@ -163,10 +206,7 @@ public class Request extends AppCompatActivity {
 
     }
 
-//    public  void setWebSocket(Class<?> webSocket)
-//    {
-//        this.webSocket=webSocket;
-//    }
+
 
 
 

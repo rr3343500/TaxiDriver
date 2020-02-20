@@ -4,9 +4,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.app.AlertDialog;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,9 +28,11 @@ public class Welcome extends AppCompatActivity {
 
     private static final int RC_OVERLAY = 0;
     private static int SPLASH_TIME_OUT = 3000;
-
+    private static final int PERMISSION_REQUEST_GPS_CODE = 1234;
     //to get user session data
     private UserSession session;
+    boolean isGPS;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +41,21 @@ public class Welcome extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+//        Location();
 
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && !Settings.canDrawOverlays(this))
-        {
-            setting();
-        }
+//        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && !Settings.canDrawOverlays(this))
+//        {
+//            setting();
+//        }
 
         session =new UserSession(Welcome.this);
         session.Booking("false");
+        session.set_requestdata("null");
         session.checkLogin();
+        session.setLocationStatus(false);
+        session.setSocketConnection(false);
+        session.set_current_duty_status(String.valueOf(false));
 
         new Handler().postDelayed(new Runnable() {
 
@@ -88,4 +99,7 @@ public class Welcome extends AppCompatActivity {
 
         }
     }
+
+
+
 }

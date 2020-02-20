@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="2"
+    tools:context=".Ridehistory.Main2Activity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/login_button"
+        android:layout_weight="1.85">
+
+        <com.example.taxidriver.extended.ButtonFonts
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:fonttype="extra"
+            android:id="@+id/request1"
+            android:layout_marginLeft="20dp"
+            android:textAlignment="textStart"
+            android:textSize="20dp"
+            android:textColor="#fff"
+            android:background="@color/login_button"
+            android:text="@string/history" />
+
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycle"
+        android:layout_weight="0.15"
+        />
+
+</LinearLayout>

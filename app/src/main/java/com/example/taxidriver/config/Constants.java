@@ -15,10 +15,13 @@ public class Constants {
 
     public static String LOGIN = URL+"login";
     public static String REQUEST_OTP = URL+"Request";
+    public static String TRIPOTP = URL+"tripotp";
     public static String DUTY_RESPONCE = URL+"OnOffDuty";
     public static String CURRENT_DUTY_STATUS = URL+"currentStatus";
-    public static String BOOKINGDATA = URL+"bookingconfirm";
-    public static String DISTANNCETIME = URL+"distanceApi";
+    public static String BOOKINGDATA = URL+"book";
+    public static String DISTANNCETIME = URL+"calculateridedata";
+    public static String SAVERIDEHISTORY = URL+"saveridedata";
+    public static String RIDEHISTORY = URL+"ridehistory";
 
 
 

@@ -10,14 +10,20 @@
     <string name="Login_content">Enter your registered</string>
     <string name="Login_content1">mobile number</string>
     <string name="login_button_text">CONTINUE</string>
+    <string name="accept_req">ACCEPT</string>
+    <string name="history">Ride History</string>
     <string name="Login_credential">Enter OTP</string>
     <string name="Login_otp">OTP has been send on </string>
+    <string name="otp">Ask Client for OTP</string>
     <string name="Login_resend">RESEND OTP</string>
     <string name="Login_varify">VERIFY &amp; LOGIN</string>
+    <string name="ride">SET RIDE</string>
+    <string name="cash">PAYMENT COLLECTED</string>
     <string name="booking">BOOKINGS</string>
     <string name="operator_bill">OPERATOR BILL</string>
     <string name="incentive">INCENTIVE</string>
     <string name="total">TOTAL</string>
+    <string name="end_trip_header">TRIP DETAIL</string>
     <string name="SERVICE_ACCEPT_REQUEST">com.example.taxidriver.ACCEPT_REQUEST</string>
 
     <!-- TODO: Remove or change this placeholder text -->

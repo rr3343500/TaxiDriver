@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Login">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Login_credential"
+            app:fonttype="bold"
+            android:textSize="25dp"
+            android:textColor="#717171"
+            />
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_marginTop="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/otp"
+            android:textSize="18dp"
+            app:fonttype="bold"
+            android:textColor="@color/Logincolor"
+
+            />
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mobile1"
+            android:textSize="18dp"
+            app:fonttype="bold"
+            android:textColor="@color/Logincolor"
+
+            tools:ignore="MissingPrefix" />
+
+        <com.goodiebag.pinview.Pinview
+            android:id="@+id/otp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cursorVisible="false"
+            app:forceKeyboard="false"
+            app:hint="0"
+            app:textSize="8dp"
+            app:inputType="number"
+            app:password="false"
+            app:pinBackground="@drawable/enter_otp"
+            app:pinHeight="50dp"
+            app:pinLength="4"
+            app:pinWidth="50dp"
+            />
+
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:id="@+id/resend"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Login_resend"
+            android:textSize="15dp"
+            app:fonttype="bold"
+            android:textColor="@color/login_button"
+            android:layout_marginTop="20dp"
+            tools:ignore="MissingPrefix" />
+
+        <com.example.taxidriver.extended.ButtonFonts
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:layout_marginTop="80dp"
+            app:fonttype="bold"
+            android:textColor="@color/Login_button_white"
+            android:id="@+id/varify"
+            android:background="@drawable/button"
+            android:text="@string/ride" />
+
+    </LinearLayout>
+
+</LinearLayout>

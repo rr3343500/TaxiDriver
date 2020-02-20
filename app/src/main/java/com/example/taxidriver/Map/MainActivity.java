@@ -10,7 +10,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Service;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,26 +29,24 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.example.taxidriver.Activity.Login;
-import com.example.taxidriver.Distance.DistanceTimeCalculate;
 import com.example.taxidriver.R;
+import com.example.taxidriver.Request.EndtripDialog;
 import com.example.taxidriver.Request.RequestDialog;
+import com.example.taxidriver.Ridehistory.Main2Activity;
 import com.example.taxidriver.config.Constants;
 import com.example.taxidriver.connection.ConnectionServer;
 import com.example.taxidriver.connection.JsonHelper;
@@ -58,11 +55,6 @@ import com.example.taxidriver.extended.TexiFonts;
 import com.example.taxidriver.usersession.UserSession;
 import com.example.taxidriver.webSocket.BackgroundService;
 import com.example.taxidriver.webSocket.SocketService;
-import com.example.taxidriver.webSocket.WebSocketConnection;
-import com.example.taxidriver.webSocket.WebSocketManupulation;
-import com.github.ybq.android.spinkit.SpinKitView;
-import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.location.LocationListener;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -92,7 +84,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -101,15 +92,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.WebSocket;
 
 import static com.example.taxidriver.R.color.Login_button_white;
 import static com.example.taxidriver.R.color.low_text_color;
@@ -148,12 +139,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
     private Boolean mRequestingLocationUpdates;
-    LinearLayout dutypannel, delivery, navigatepannel;
+    LinearLayout dutypannel, delivery, navigatepannel,trippannel,account;
     BackgroundService backgroundService;
     Intent intent;
     SocketService socketService;
     View topbar,incentivepannel,bottom_menu;
-    ButtonFonts navigate;
+    ButtonFonts navigate,clientLocated,navigatetrip,endtrip;
+    TexiFonts clientaddress,time,addresstype,bookings,operatorbill,total ;
 
 
     //oncreate method
@@ -163,7 +155,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
         userSession = new UserSession(MainActivity.this);
 
-         userSession.setSocketConnection(false);
+
 
          // get id of layout
         radioGroup = findViewById(R.id.duty);
@@ -180,9 +172,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         navigate= findViewById(R.id.navigate);
         bottom_menu= findViewById(R.id.bottommenu);
         navigatepannel= findViewById(R.id.navigatepannel);
+        navigatepannel= findViewById(R.id.navigatepannel);
+        clientLocated= findViewById(R.id.clientlocated);
+        clientaddress= findViewById(R.id.address);
+        time= findViewById(R.id.time);
+        navigatetrip= findViewById(R.id.navigatetrip);
+        trippannel= findViewById(R.id.trippannel);
+        endtrip= findViewById(R.id.endtrip);
+        addresstype= findViewById(R.id.addresstype);
+        bookings= findViewById(R.id.bookings);
+        operatorbill= findViewById(R.id.operatorbill);
+        total= findViewById(R.id.total);
+        account= findViewById(R.id.account);
+
+        account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(MainActivity.this, Main2Activity.class);
+                startActivity(intent);
+                Animatoo.animateInAndOut(MainActivity.this);
+            }
+        });
 
         setbooking();
-//        set_initial_duty_status();
+        set_initial_duty_status();
+        setIncentivepannel();
+
         // initiate background services
           backgroundService= new BackgroundService(this);
           intent= new Intent(MainActivity.this,BackgroundService.class);
@@ -196,7 +211,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.on:
-//                        backgroundService.onCreate();
+                        userSession.setsocketonoff("true");
                         socketService= new SocketService();
                         socketService.setdata(MainActivity.this);
                          socketService.onStartCommand(intent,1,1);
@@ -213,11 +228,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                            backgroundService.onStartCommand(intent, 1, 1);
                          break;
                     case R.id.off:
-//                        if(userSession.getSocketConnection())
-//                        {
-//                            backgroundService.onDestroy();
-//                        }
+                        userSession.setsocketonoff("false");
                         userSession.set_current_duty_status("false");
+                        if(userSession.getSocketConnection())
+                        {
+                            socketService.onDestroy();
+                        }
+
                         dutypannel.setBackground(getResources().getDrawable(R.drawable.off_duty));
                         Duty_responce(userSession.get_mobile(),"false");
                         on.setButtonDrawable(new StateListDrawable());
@@ -333,6 +350,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     //place adapter for fatching places
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        buildGoogleApiClient();
+    }
 
     //update place call back method
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
@@ -411,6 +433,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("RestrictedApi")
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+//        buildGoogleApiClient();
+        checkLocationPermission();
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -426,9 +450,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             else {
             Log.i(TAG, "Google Places API not  connected.");
                 Toast.makeText(this, "google api client is not connected", Toast.LENGTH_SHORT).show();
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient2.disconnect();
-            buildGoogleApiClient();
+//            mGoogleApiClient.disconnect();
+//            mGoogleApiClient2.disconnect();
+//            buildGoogleApiClient();
 //            onConnected(bundle);
 
             }
@@ -473,12 +497,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             if(destination!=null){
                 drawRoute(view);
             }
-            source =  mMap.addMarker(new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("My Location"));
+             mMap.setMyLocationEnabled(true);
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
 
             Log.d("location", "Latitude:" + mLastLocation.getLatitude() + "\n" + "Longitude:" + mLastLocation.getLongitude());
-
-
 
 
 
@@ -648,11 +671,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     //mark source location on map
-    public void Source(Double lat,Double log ,String msg){
+    public void Source(Double lat, Double log , String msg){
         LatLng current;
         current = new LatLng(lat,log);
         destination = mMap.addMarker(new MarkerOptions().draggable(true).title(msg).
-                position(current).icon(BitmapDescriptorFactory.fromResource(R.drawable.walk)));
+                position(current).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 current, 16));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
@@ -672,29 +695,75 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     //method for draw route on map
     public void drawRoute(View view) {
-        Double  Lati=26.236280;
-        Double  Logi=78.179939;
+
+        double Lati;
+        double Logi;
+
+
+        if(userSession.getLocationStatus()){
+             Lati= Double.valueOf(userSession.getdroplat());
+            Logi= Double.valueOf(userSession.getdroplong());
+            origin = new LatLng(userSession.getLatitute(),userSession.getLogitute());
+            dest = new LatLng(Lati,Logi);
+            Source(Lati,Logi,"drop");
+        }
+        else
+        {
+            switch (userSession.getBookingtype())
+            {
+                case "daily":
+                    Lati= Double.valueOf(userSession.getpiclat());
+                     Logi= Double.valueOf(userSession.getpiclong());
+                    origin = new LatLng(userSession.getLatitute(),userSession.getLogitute());
+                    dest = new LatLng(Lati,Logi);
+                    Source(Lati,Logi,"drop");
+                    break;
+
+                case "rental":
+                     Lati= Double.valueOf(userSession.getRentaldetail().get("rentalpiclat"));
+                    Logi= Double.valueOf(userSession.getRentaldetail().get("rentalpiclong"));
+                    origin = new LatLng(userSession.getLatitute(),userSession.getLogitute());
+                    dest = new LatLng(Lati,Logi);
+                    Source(Lati,Logi,"drop");
+                    break;
+
+                case "OutStation":
+                    Lati= Double.valueOf(userSession.getpiclat());
+                    Logi= Double.valueOf(userSession.getpiclong());
+                    origin = new LatLng(userSession.getLatitute(),userSession.getLogitute());
+                    dest = new LatLng(Lati,Logi);
+                    Source(Lati,Logi,"drop");
+                    break;
+
+
+            }
+
+        }
+
+
+                    // Getting URL to the Google Directions API
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(url);
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    startTrack = true;
+
+
 
 //        DistanceTimeCalculate distanceTimeCalculate =new DistanceTimeCalculate(Lati,Logi,mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
-        origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
 //        origin = new LatLng(26.236285,78.179939);
 //        dest = new LatLng(destLat, destLong);
-        dest = new LatLng(Lati, Logi);
-        Source(Lati,Logi,"start");
 
-        // Getting URL to the Google Directions API
-        String url = getUrl(origin, dest);
-        Log.d("onMapClick", url.toString());
-        FetchUrl FetchUrl = new FetchUrl();
-
-        // Start downloading json data from Google Directions API
-        FetchUrl.execute(url);
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        startTrack = true;
     }
+
+
     //end of method for draw route on map
 
 
@@ -1072,9 +1141,84 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
              topbar.setVisibility(View.GONE);
              bottom_menu.setVisibility(View.GONE);
              incentivepannel.setVisibility( View.GONE);
+             clientaddress.setText(userSession.getClientaddress());
+             Calendar  calander = Calendar.getInstance();
+             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+             String currentTime = simpleDateFormat.format(calander.getTime());
+             time.setText(currentTime);
+             clientLocated.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     OTPDialog();
+                 }
+             });
+             if(userSession.getLocationStatus())
+             {
+                 Geocoder geocoder=new Geocoder(this);
+                 List<Address> address = null;
+                 String clientaddress1;
+                 try {
+                     switch (userSession.getBookingtype())
+                     {
+                         case "daily":
+                             address = geocoder.getFromLocation(Double.parseDouble(userSession.getdroplat()),Double.parseDouble(userSession.getdroplong()), 1);
+                              clientaddress1 = address.get(0).getAddressLine(0);
+                             addresstype.setText("Drop Address");
+                             clientaddress.setText(clientaddress1);
+                             trippannel.setVisibility(View.VISIBLE);
+                             navigatepannel.setVisibility(View.GONE);
+                             break;
+                         case "rental":
+//                             clientaddress1  = address.get(0).getAddressLine(0);
+//                             addresstype.setText("Drop Address");
+//                             clientaddress.setText(clientaddress1);
+                             trippannel.setVisibility(View.VISIBLE);
+                             navigatepannel.setVisibility(View.GONE);
+                              break;
+                         case "OutStation":
+                             address = geocoder.getFromLocation(Double.parseDouble(userSession.getdroplat()),Double.parseDouble(userSession.getdroplong()), 1);
+                              clientaddress1 = address.get(0).getAddressLine(0);
+                             addresstype.setText("Drop Address");
+                             clientaddress.setText(clientaddress1);
+                             trippannel.setVisibility(View.VISIBLE);
+                             navigatepannel.setVisibility(View.GONE);
+                             break;
+                     }
+                        } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+//                  clientaddress1 = address.get(0).getAddressLine(0);
+//                 addresstype.setText("Drop Address");
+//                 clientaddress.setText(clientaddress1);
+//                 trippannel.setVisibility(View.VISIBLE);
+//                 navigatepannel.setVisibility(View.GONE);
+                 endtrip.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View view) {
+                         endtrip();
+                     }
+                 });
+             }
          }
      }
 
 
+     public void OTPDialog()
+     {
+         RequestDialog requestDialog= new RequestDialog(MainActivity.this);
+         requestDialog.show();
+     }
 
+    public void endtrip()
+    {
+        EndtripDialog endtripDialog= new EndtripDialog(MainActivity.this);
+        endtripDialog.show();
+    }
+
+    public void setIncentivepannel()
+    {
+    bookings.setText(userSession.gettotalbooking().get("booking"));
+    total.setText("₹"+userSession.gettotalbooking().get("total"));
+    operatorbill.setText("₹"+userSession.gettotalbooking().get("operater"));
+    }
 }

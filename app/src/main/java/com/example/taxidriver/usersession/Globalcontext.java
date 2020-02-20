@@ -1,4 +1,4 @@
-package com.example.taxidriver;
+package com.example.taxidriver.usersession;
 
 import android.app.Application;
 import android.content.Context;

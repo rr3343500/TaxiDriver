@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Login">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:orientation="vertical"
+        >
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Booking"
+            app:fonttype="bold"
+            android:textSize="30dp"
+            android:textColor="#717171"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            >
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textAlignment="textStart"
+                android:text="Address :"
+                />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:id="@+id/address"
+                android:text=""
+                tools:ignore="InvalidId" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            >
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textAlignment="textStart"
+                android:text="Booking Type :"
+                />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:id="@+id/booktype"
+                android:text=""
+                tools:ignore="InvalidId" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:id="@+id/duration"
+            android:layout_marginLeft="20dp"
+            >
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textAlignment="textStart"
+                android:text="Time Duration"
+                />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:id="@+id/time"
+                android:text=""
+                tools:ignore="InvalidId" />
+
+        </LinearLayout>
+
+
+
+
+        <com.example.taxidriver.extended.ButtonFonts
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:layout_marginTop="80dp"
+            app:fonttype="bold"
+            android:id="@+id/request1"
+            android:background="@drawable/button"
+            android:text="@string/accept_req" />
+
+    </LinearLayout>
+
+</LinearLayout>

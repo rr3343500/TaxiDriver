@@ -45,7 +45,7 @@
             app:fonttype="bold"
             android:textColor="#000"
             android:textSize="15dp"
-            android:text="Street :" />
+            android:text="Address :" />
 
         <com.example.taxidriver.extended.TexiFonts
             android:layout_width="match_parent"
@@ -53,9 +53,9 @@
             android:layout_marginLeft="20dp"
             app:fonttype="bold"
             android:textAlignment="textStart"
-            android:id="@+id/Streetname"
+            android:id="@+id/address"
             android:textColor="#000"
-            android:text="City Center "
+            android:text=""
             android:textSize="15dp"
             />
         </LinearLayout>
@@ -66,6 +66,7 @@
             android:layout_below="@id/street"
             android:layout_marginLeft="20dp"
             android:id="@+id/city"
+            android:visibility="gone"
             android:layout_marginTop="-20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
@@ -85,7 +86,7 @@
                 android:id="@+id/cityname"
                 android:textColor="#000"
                 android:textSize="15dp"
-                android:text="Gwalior "
+                android:text=""
                 />
         </LinearLayout>
 
@@ -100,22 +101,22 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
-                android:layout_width="80dp"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 app:fonttype="bold"
                 android:textColor="#000"
                 android:textSize="15dp"
-                android:text="Distance :   " />
+                android:text="BookingType :   " />
 
             <com.example.taxidriver.extended.TexiFonts
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 app:fonttype="bold"
-                android:id="@+id/distancekm"
+                android:id="@+id/bookingtype"
                 android:textColor="#000"
                 android:textSize="15dp"
-                android:text="30 KM "
+                android:text=""
                 />
         </LinearLayout>
 
@@ -125,7 +126,7 @@
             android:layout_below="@id/street"
             android:layout_marginLeft="20dp"
             android:id="@+id/time"
-
+            android:visibility="gone"
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts
@@ -155,7 +156,7 @@
             android:layout_below="@id/street"
             android:layout_marginLeft="20dp"
             android:id="@+id/price"
-
+            android:visibility="gone"
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
             <com.example.taxidriver.extended.TexiFonts

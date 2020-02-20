@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|top"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        >
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/end_trip_header"
+            app:fonttype="bold"
+            android:layout_marginBottom="40dp"
+            android:textAlignment="center"
+            android:textSize="25dp"
+            android:textColor="#717171"
+            />
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:weightSum="2">
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:layout_marginTop="40dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time Duration :  "
+            android:textSize="18dp"
+            app:fonttype="bold"
+            android:textColor="@color/Logincolor" />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:id="@+id/timeduration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18dp"
+                app:fonttype="bold"
+                android:textColor="@color/Logincolor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="-30dp"
+            android:weightSum="2">
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DISTANCE :  "
+                android:textSize="18dp"
+                app:fonttype="bold"
+
+                android:textAlignment="textEnd"
+                android:textColor="@color/Logincolor" />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:id="@+id/distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18dp"
+
+                app:fonttype="bold"
+                android:textAlignment="textStart"
+                android:textColor="@color/Logincolor" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="-30dp"
+            android:weightSum="2">
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:text="TOTAL AMOUNT :  "
+                android:textSize="18dp"
+                app:fonttype="bold"
+                android:textAlignment="textEnd"
+                android:textColor="@color/Logincolor" />
+
+            <com.example.taxidriver.extended.TexiFonts
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:id="@+id/amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="textStart"
+                android:textSize="18dp"
+                app:fonttype="bold"
+                android:textColor="@color/Logincolor" />
+
+        </LinearLayout>
+
+
+
+        <com.example.taxidriver.extended.TexiFonts
+            android:id="@+id/resend"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Login_resend"
+            android:textSize="15dp"
+            app:fonttype="bold"
+            android:textColor="@color/login_button"
+            android:layout_marginTop="20dp"
+            tools:ignore="MissingPrefix" />
+
+        <com.example.taxidriver.extended.ButtonFonts
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:layout_marginTop="80dp"
+            app:fonttype="bold"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textColor="@color/Login_button_white"
+            android:id="@+id/end"
+            android:background="@drawable/button"
+            android:text="@string/cash" />
+
+    </LinearLayout>
+
+</LinearLayout>
