@@ -16,7 +16,7 @@
         android:orientation="vertical"
         >
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Login_credential"
@@ -25,7 +25,7 @@
             android:textColor="#717171"
             />
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
 
             />
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mobile1"
@@ -66,7 +66,7 @@
             />
 
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:id="@+id/resend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
              android:layout_marginTop="20dp"
             tools:ignore="MissingPrefix" />
 
-        <com.example.taxidriver.extended.ButtonFonts
+        <com.iwish.taxidriver.extended.ButtonFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"

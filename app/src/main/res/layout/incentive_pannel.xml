@@ -15,7 +15,7 @@
         android:gravity="center"
         android:layout_height="match_parent">
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             app:fonttype="bold"
@@ -25,7 +25,7 @@
             android:textSize="10dp"
             android:layout_height="wrap_content"/>
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="0"
@@ -47,7 +47,7 @@
         android:gravity="center"
         android:layout_height="match_parent">
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             app:fonttype="bold"
@@ -57,7 +57,7 @@
             android:textSize="10dp"
             android:layout_height="wrap_content"/>
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="₹ 0"
@@ -80,7 +80,7 @@
         android:gravity="center"
         android:layout_height="match_parent">
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             app:fonttype="bold"
@@ -90,7 +90,7 @@
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"/>
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="₹ 0"
@@ -110,7 +110,7 @@
         android:gravity="center"
         android:layout_height="match_parent">
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             app:fonttype="bold"
@@ -120,7 +120,7 @@
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"/>
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="₹ 0"

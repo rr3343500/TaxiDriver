@@ -13,14 +13,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/login_button"
+        android:orientation="horizontal"
         android:layout_weight="1.85">
 
-        <com.example.taxidriver.extended.ButtonFonts
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/back"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/leftarr"
+            />
+
+        <com.iwish.taxidriver.extended.ButtonFonts
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:fonttype="extra"
+
             android:id="@+id/request1"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="30dp"
             android:textAlignment="textStart"
             android:textSize="20dp"
             android:textColor="#fff"

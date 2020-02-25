@@ -13,7 +13,7 @@
         android:background="@drawable/ridehistorybackground"
         android:orientation="vertical">
 
-          <com.example.taxidriver.extended.TexiFonts
+          <com.iwish.taxidriver.extended.TexiFonts
               android:layout_width="match_parent"
               android:textAlignment="textStart"
               android:layout_marginLeft="20dp"
@@ -33,7 +33,7 @@
             android:layout_marginRight="20dp"
             android:weightSum="2">
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Pickup"
@@ -41,7 +41,7 @@
                 android:textColor="#000"
                 android:layout_weight="1.5"/>
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Birla nager "
@@ -62,7 +62,7 @@
             android:layout_marginLeft="20dp"
             android:weightSum="2">
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Drop"
@@ -70,7 +70,7 @@
                 android:textColor="#000"
                 android:layout_weight="1.5"/>
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Birla nager "
@@ -93,7 +93,7 @@
             android:layout_marginBottom="20dp"
             android:weightSum="2">
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Amount  500"
@@ -102,7 +102,7 @@
                 android:textColor="#000"
                 android:layout_weight="1"/>
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Distance 3 KM"

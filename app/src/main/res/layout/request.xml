@@ -4,26 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:background="@color/login_button"
     tools:context=".Activity.Login">
+
+    <com.iwish.taxidriver.extended.TexiFonts
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You have new Booking  "
+        app:fonttype="bold"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:textColor="#fff"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="5dp"
         android:gravity="center_vertical|center_horizontal"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
+        android:background="@drawable/booking_background"
         android:orientation="vertical"
         >
 
-        <com.example.taxidriver.extended.TexiFonts
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Booking"
-            app:fonttype="bold"
-            android:textSize="30dp"
-            android:textColor="#717171"
-            />
+    <ImageView
+    android:layout_width="match_parent"
+    android:src="@drawable/booking"
+      android:layout_margin="50dp"
+    android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,8 +44,9 @@
             android:weightSum="2"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             >
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
@@ -41,7 +54,7 @@
                 android:text="Address :"
                 />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -58,8 +71,9 @@
             android:weightSum="2"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             >
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
@@ -67,7 +81,7 @@
                 android:text="Booking Type :"
                 />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -87,7 +101,7 @@
             android:id="@+id/duration"
             android:layout_marginLeft="20dp"
             >
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
@@ -95,7 +109,7 @@
                 android:text="Time Duration"
                 />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -108,13 +122,14 @@
 
 
 
-        <com.example.taxidriver.extended.ButtonFonts
+        <com.iwish.taxidriver.extended.ButtonFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:layout_marginTop="80dp"
             app:fonttype="bold"
             android:id="@+id/request1"
+            android:textColor="@color/Login_button_white"
             android:background="@drawable/button"
             android:text="@string/accept_req" />
 

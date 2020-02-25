@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:430920252155:android:898b6504b8f0f4a1ba4e5e",
         "android_client_info": {
-          "package_name": "com.example.taxidriver"
+          "package_name": "com.iwish.taxidriver"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "430920252155-29f9033nfhffob0i85mignth8mcjm79g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.taxidriver",
+            "package_name": "com.iwish.taxidriver",
             "certificate_hash": "5d642a101c9d8da2657e660396322dc6f9effd41"
           }
         },

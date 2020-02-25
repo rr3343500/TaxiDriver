@@ -15,7 +15,7 @@
         android:padding="20dp"
         >
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/end_trip_header"
@@ -36,7 +36,7 @@
             android:layout_gravity="center"
             android:weightSum="2">
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:layout_marginTop="40dp"
             android:layout_weight="1"
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
             app:fonttype="bold"
             android:textColor="@color/Logincolor" />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:id="@+id/timeduration"
@@ -67,7 +67,7 @@
             android:layout_marginTop="-30dp"
             android:weightSum="2">
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/Logincolor" />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:id="@+id/distance"
@@ -103,7 +103,7 @@
             android:layout_marginTop="-30dp"
             android:weightSum="2">
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:layout_width="380dp"
@@ -114,7 +114,7 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/Logincolor" />
 
-            <com.example.taxidriver.extended.TexiFonts
+            <com.iwish.taxidriver.extended.TexiFonts
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:id="@+id/amount"
@@ -130,7 +130,7 @@
 
 
 
-        <com.example.taxidriver.extended.TexiFonts
+        <com.iwish.taxidriver.extended.TexiFonts
             android:id="@+id/resend"
             android:visibility="gone"
             android:layout_width="match_parent"
@@ -142,7 +142,7 @@
             android:layout_marginTop="20dp"
             tools:ignore="MissingPrefix" />
 
-        <com.example.taxidriver.extended.ButtonFonts
+        <com.iwish.taxidriver.extended.ButtonFonts
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
