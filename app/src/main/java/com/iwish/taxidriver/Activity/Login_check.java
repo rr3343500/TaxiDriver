@@ -86,7 +86,8 @@ public class Login_check extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonHelper.setChildjsonObj(jsonArray, i);
                             UserSession userSession= new UserSession(Login_check.this);
-                            userSession.createLoginSession(mobile,jsonHelper.GetResult("driver_id"));
+
+                            userSession.createLoginSession(mobile,jsonHelper.GetResult("driver_id"),jsonHelper.GetResult("catagory_name"));
                         }
 
                         Intent intent = new Intent(Login_check.this, MainActivity.class);//Home

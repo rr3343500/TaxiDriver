@@ -94,48 +94,48 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
 
 
 
-           if(fileBuildparameter.size()>0) {
-               for(Map.Entry<String, String> entry :fileBuildparameter.entrySet())
-               {
-                   FileInputStream fileInputStream = new FileInputStream(entry.getValue());
+            if(fileBuildparameter.size()>0) {
+                for(Map.Entry<String, String> entry :fileBuildparameter.entrySet())
+                {
+                    FileInputStream fileInputStream = new FileInputStream(entry.getValue());
 
-                   int bytesRead, bytesAvailable, bufferSize;
-                   byte[] buffer;
-                   int maxBufferSize = 1 * 1024 * 1024;
-                   File selectedFile = new File(entry.getValue());
-
-
-                   String[] parts = selectedFilePath.split("/");
-                   final String fileName = parts[parts.length - 1];
+                    int bytesRead, bytesAvailable, bufferSize;
+                    byte[] buffer;
+                    int maxBufferSize = 1 * 1024 * 1024;
+                    File selectedFile = new File(entry.getValue());
 
 
-                   request.writeBytes(twoHyphens + boundary + crlf);
-                   request.writeBytes("Content-Disposition: form-data; name=\"" + entry.getKey() + "\";filename=\""
-                           + entry.getValue() + "\"" + crlf);
-                   request.writeBytes("Content-Type: " + MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(entry.getValue())) + crlf);
-                   request.writeBytes(crlf);
-                   //returns no. of bytes present in fileInputStream
-                   bytesAvailable = fileInputStream.available();
-                   //selecting the buffer size as minimum of available bytes or 1 MB
-                   bufferSize = Math.min(bytesAvailable,maxBufferSize);
-                   //setting the buffer as byte array of size of bufferSize
-                   buffer = new byte[bufferSize];
+                    String[] parts = selectedFilePath.split("/");
+                    final String fileName = parts[parts.length - 1];
 
-                   //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
-                   bytesRead = fileInputStream.read(buffer,0,bufferSize);
 
-                   //loop repeats till bytesRead = -1, i.e., no bytes are left to read
-                   while (bytesRead > 0){
-                       //write the bytes read from inputstream
-                       request.write(buffer,0,bufferSize);
-                       bytesAvailable = fileInputStream.available();
-                       bufferSize = Math.min(bytesAvailable,maxBufferSize);
-                       bytesRead = fileInputStream.read(buffer,0,bufferSize);
-                   }
+                    request.writeBytes(twoHyphens + boundary + crlf);
+                    request.writeBytes("Content-Disposition: form-data; name=\"" + entry.getKey() + "\";filename=\""
+                            + entry.getValue() + "\"" + crlf);
+                    request.writeBytes("Content-Type: " + MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(entry.getValue())) + crlf);
+                    request.writeBytes(crlf);
+                    //returns no. of bytes present in fileInputStream
+                    bytesAvailable = fileInputStream.available();
+                    //selecting the buffer size as minimum of available bytes or 1 MB
+                    bufferSize = Math.min(bytesAvailable,maxBufferSize);
+                    //setting the buffer as byte array of size of bufferSize
+                    buffer = new byte[bufferSize];
 
-                   request.writeBytes(crlf);
-               }
-           }
+                    //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
+                    bytesRead = fileInputStream.read(buffer,0,bufferSize);
+
+                    //loop repeats till bytesRead = -1, i.e., no bytes are left to read
+                    while (bytesRead > 0){
+                        //write the bytes read from inputstream
+                        request.write(buffer,0,bufferSize);
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable,maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer,0,bufferSize);
+                    }
+
+                    request.writeBytes(crlf);
+                }
+            }
 
             if(stringBuildparameter.size()>0) {
                 for(Map.Entry<String, String> entity :stringBuildparameter.entrySet()) {
@@ -154,7 +154,7 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
 
 
 
-        request.writeBytes(twoHyphens + boundary + twoHyphens);
+            request.writeBytes(twoHyphens + boundary + twoHyphens);
             request.flush();
             request.close();
 
@@ -162,9 +162,9 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
             Log.e("Response Code", String.valueOf(this.conn.getResponseCode()));
 
             if(this.conn.getResponseCode()== HttpURLConnection.HTTP_OK)
-            responseStream = new BufferedInputStream(this.conn.getInputStream());
+                responseStream = new BufferedInputStream(this.conn.getInputStream());
             else
-            responseStream = new BufferedInputStream(this.conn.getErrorStream());
+                responseStream = new BufferedInputStream(this.conn.getErrorStream());
 
 
             BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
@@ -183,7 +183,7 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
 
 
 
-           } catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
 
@@ -215,13 +215,13 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
             this.pdLoading.dismiss();
         }
         delegate.processFinish(result);
-      //  Log.e("data",result);
+        //  Log.e("data",result);
 
     }
     public void setFilepath(String key, String filePath)
     {
 
-          this.selectedFilePath = filePath;
+        this.selectedFilePath = filePath;
 
         fileBuildparameter.put(key,filePath);
 
@@ -238,7 +238,7 @@ public class ConnectionServer extends AsyncTask<String, String, String> {
     public void set_url(String url)
     {
 
-                 this.urlString = url;
+        this.urlString = url;
 
 
 

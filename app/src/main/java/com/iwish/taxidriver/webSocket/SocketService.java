@@ -44,6 +44,7 @@ public class SocketService extends android.app.Service {
     WebSocketListener webSocketListener;
     public Globalcontext GlobalApplication;
     private static final int NORMAL_CLOSURE_STATUS = 1000;
+    String vichletype="empty";
 
     public SocketService() {
 
@@ -105,89 +106,96 @@ public class SocketService extends android.app.Service {
                try {
                    mainObject = new JSONObject(text);
                    String requesttype = mainObject.getString("type");
-                   switch (requesttype) {
-                       //Case statements
-                       case "vehicleRequest":
+                   JSONObject type = mainObject.getJSONObject("data");
+                   vichletype = type.getString("vechiletype");
 
-                            if(!(userSession.getbookingstatus())) {
-                                JSONObject clientdata = mainObject.getJSONObject("data");
-                                String clientid = clientdata.getString("userId");
-                                String piclat = clientdata.getString("pickuplat");
-                                String piclong = clientdata.getString("pickuplong");
-                                String droplat = clientdata.getString("droplat");
-                                String droplong = clientdata.getString("droplong");
 
-                                final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\" ,\"trackid\":\""+clientid+n+"\"}";
+
+                   if(vichletype.equals(userSession.getUserDetails().get("vechicletype"))) {
+                       switch (requesttype) {
+                           //Case statements
+                           case "vehicleRequest":
+
+                               if (!(userSession.getbookingstatus())) {
+                                   JSONObject clientdata = mainObject.getJSONObject("data");
+                                   String clientid = clientdata.getString("userId");
+                                   String piclat = clientdata.getString("pickuplat");
+                                   String piclong = clientdata.getString("pickuplong");
+                                   String droplat = clientdata.getString("droplat");
+                                   String droplong = clientdata.getString("droplong");
+
+                                   final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\" ,\"trackid\":\"" + clientid + n + "\"}";
 //                           webSocket.send(JSON_STRING);
-                                userSession.settrackid(String.valueOf(clientid+n));
-                                Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
-                                intent1.putExtra("data", JSON_STRING);
-                                intent1.putExtra("clientid", clientid);
-                                intent1.putExtra("dlat", droplat);
-                                intent1.putExtra("dlong", droplong);
-                                intent1.putExtra("plat", piclat);
-                                intent1.putExtra("plong", piclong);
-                                intent1.putExtra("book", "daily");
-                                context.startActivity(intent1);
-                                Animatoo.animateShrink(context);
+                                   userSession.settrackid(String.valueOf(clientid + n));
+                                   Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
+                                   intent1.putExtra("data", JSON_STRING);
+                                   intent1.putExtra("clientid", clientid);
+                                   intent1.putExtra("dlat", droplat);
+                                   intent1.putExtra("dlong", droplong);
+                                   intent1.putExtra("plat", piclat);
+                                   intent1.putExtra("plong", piclong);
+                                   intent1.putExtra("book", "daily");
+                                   context.startActivity(intent1);
+                                   Animatoo.animateShrink(context);
 
-                            }
+                               }
 //                    sendRequest(text,webSocket);
-                           break;
-                       case "Rental":
-                           if(!(userSession.getbookingstatus())) {
-                               JSONObject clientdata = mainObject.getJSONObject("data");
-                               String clientid = clientdata.getString("userId");
-                               String piclat = clientdata.getString("pickuplat");
-                               String piclong = clientdata.getString("pickuplong");
-                               String pickupCityName = clientdata.getString("PickupCityName");
-                               String timeDuration = clientdata.getString("TimeDuration");
+                               break;
+                           case "Rental":
+                               if (!(userSession.getbookingstatus())) {
+                                   JSONObject clientdata = mainObject.getJSONObject("data");
+                                   String clientid = clientdata.getString("userId");
+                                   String piclat = clientdata.getString("pickuplat");
+                                   String piclong = clientdata.getString("pickuplong");
+                                   String pickupCityName = clientdata.getString("PickupCityName");
+                                   String timeDuration = clientdata.getString("TimeDuration");
 
 
-                               final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\",\"trackid\":\""+clientid+n+"\"}";
-                                userSession.settrackid(String.valueOf(clientid+n));
-                               Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
-                               intent1.putExtra("data", JSON_STRING);
-                               intent1.putExtra("clientid", clientid);
-                               intent1.putExtra("plat", piclat);
-                               intent1.putExtra("plong", piclong);
-                               intent1.putExtra("pickupcity", pickupCityName);
-                               intent1.putExtra("timeduration", timeDuration);
-                               intent1.putExtra("book", "rental");
-                               context.startActivity(intent1);
+                                   final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\",\"trackid\":\"" + clientid + n + "\"}";
+                                   userSession.settrackid(String.valueOf(clientid + n));
+                                   Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
+                                   intent1.putExtra("data", JSON_STRING);
+                                   intent1.putExtra("clientid", clientid);
+                                   intent1.putExtra("plat", piclat);
+                                   intent1.putExtra("plong", piclong);
+                                   intent1.putExtra("pickupcity", pickupCityName);
+                                   intent1.putExtra("timeduration", timeDuration);
+                                   intent1.putExtra("book", "rental");
+                                   context.startActivity(intent1);
 
-                           }
+                               }
 
-                           break;
-                       case "OutStation":
-                           if(!(userSession.getbookingstatus())) {
-                               JSONObject clientdata = mainObject.getJSONObject("data");
-                               String clientid = clientdata.getString("userId");
-                               String piclat = clientdata.getString("pickuplat");
-                               String piclong = clientdata.getString("pickuplong");
-                               String droplat = clientdata.getString("droplat");
-                               String droplong = clientdata.getString("droplong");
+                               break;
+                           case "OutStation":
+                               if (!(userSession.getbookingstatus())) {
+                                   JSONObject clientdata = mainObject.getJSONObject("data");
+                                   String clientid = clientdata.getString("userId");
+                                   String piclat = clientdata.getString("pickuplat");
+                                   String piclong = clientdata.getString("pickuplong");
+                                   String droplat = clientdata.getString("droplat");
+                                   String droplong = clientdata.getString("droplong");
 
 
-                               final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\",\"trackid\":\""+clientid+n+"\"}";
+                                   final String JSON_STRING = "{\"userID\" :\"" + clientid + "\",\"driverID\":\"" + userSession.getUserDetails().get("driverid") + "\",\"lat\":\"" + userSession.getLatitute() + "\",\"long\":\"" + userSession.getLogitute() + "\",\"type\":\"acceptReq\",\"trackid\":\"" + clientid + n + "\"}";
 //                           webSocket.send(JSON_STRING);
-                               userSession.settrackid(String.valueOf(clientid+n));
-                               Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
-                               intent1.putExtra("data", JSON_STRING);
-                               intent1.putExtra("clientid", clientid);
-                               intent1.putExtra("dlat", droplat);
-                               intent1.putExtra("dlong", droplong);
-                               intent1.putExtra("plat", piclat);
-                               intent1.putExtra("plong", piclong);
-                               intent1.putExtra("book", "OutStation");
+                                   userSession.settrackid(String.valueOf(clientid + n));
+                                   Intent intent1 = new Intent(context, com.iwish.taxidriver.Activity.Request.class);
+                                   intent1.putExtra("data", JSON_STRING);
+                                   intent1.putExtra("clientid", clientid);
+                                   intent1.putExtra("dlat", droplat);
+                                   intent1.putExtra("dlong", droplong);
+                                   intent1.putExtra("plat", piclat);
+                                   intent1.putExtra("plong", piclong);
+                                   intent1.putExtra("book", "OutStation");
 
-                               context.startActivity(intent1);
-                               Animatoo.animateShrink(context);
-                           }
-                           break;
-                       //Default case statement
-                       default:
+                                   context.startActivity(intent1);
+                                   Animatoo.animateShrink(context);
+                               }
+                               break;
+                           //Default case statement
+                           default:
 
+                       }
                    }
 
                } catch (JSONException e) {

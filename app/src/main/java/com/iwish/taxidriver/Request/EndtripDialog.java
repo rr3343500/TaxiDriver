@@ -125,7 +125,6 @@ public class EndtripDialog extends Dialog implements android.view.View.OnClickLi
                 locationB.setLatitude(latLngB.latitude);
                 locationB.setLongitude(latLngB.longitude);
                 distancecalculated = Double.parseDouble(String.format("%.2f", locationA.distanceTo(locationB) / 1000));
-
                 distance(String.valueOf(distancecalculated), userSession.getUserDetails().get("driverid"));
 
             }

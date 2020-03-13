@@ -151,6 +151,7 @@ public class UserSession {
 
     // booking  type (make variable public to access from outside)
     public static final String ENDTRIPDATA = "endtripdata";
+    public static final String VECHILETYPE = "vechicletype";
 
     // Constructor
     public UserSession(Context context){
@@ -160,7 +161,7 @@ public class UserSession {
     }
 
 
-    public void createLoginSession( String mobile ,String driverid){
+    public void createLoginSession( String mobile ,String driverid ,String type){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -174,6 +175,8 @@ public class UserSession {
         editor.putString(KEY_MOBiLE, mobile);
         // storing duty status in pref
         editor.putString(DUTY_STATUS,"false");
+
+        editor.putString(VECHILETYPE,type);
 
         // Storing image url in pref
 //        editor.putString(KEY_PHOTO, photo);
@@ -220,6 +223,9 @@ public class UserSession {
 
         // user avatar
         user.put(KEY_PHOTO, pref.getString(KEY_PHOTO, null)) ;
+
+
+        user.put(VECHILETYPE, pref.getString(VECHILETYPE, null)) ;
 
         // return user
         return user;
